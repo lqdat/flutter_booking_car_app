@@ -2,13 +2,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/car.dart';
+import 'package:flutter_application/res/DTO/user.dart';
 import 'package:flutter_application/res/service/carservice.dart';
 import 'package:flutter_application/res/stream/car_steam.dart';
 import 'package:flutter_application/res/wiget_home/wigets/info_trip_wiget.dart';
 
 class CarWiget extends StatefulWidget {
+  String from_address;
+  String to_address;
   double distance;
-  CarWiget(this.distance);
+  User user;
+  Function() close;
+  CarWiget(
+      this.distance, this.from_address, this.to_address, this.user, this.close);
   @override
   State<CarWiget> createState() => _CarWigetState();
 }
@@ -22,6 +28,7 @@ class _CarWigetState extends State<CarWiget> {
         }));
   }
 
+  int CarIdSelector = 0;
   @override
   void initState() {
     super.initState();
@@ -156,8 +163,15 @@ class _CarWigetState extends State<CarWiget> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(30)),
                                 ),
-                                height: 400,
-                                child: InfoTrip(),
+                                height: 500,
+                                child: InfoTrip(
+                                    _getTotal(),
+                                    widget.from_address,
+                                    widget.to_address,
+                                    DateTime.now(),
+                                    widget.user,
+                                    widget.distance,
+                                    () => widget.close),
                               );
                             },
                           );

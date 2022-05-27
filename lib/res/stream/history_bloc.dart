@@ -24,14 +24,18 @@ class HistoryStream {
   History getCurrentCar(List<History> historyList) {
     if (historyList.isEmpty) {
       return History(
-          car_name: '',
-          carId: 0,
-          date: '',
-          from_address: '',
-          id: '',
-          price: 0,
-          to_address: '',
-          userId: '');
+        car_name: '',
+        carId: 0,
+        date: '',
+        from_address: '',
+        id: '',
+        price: 0,
+        to_address: '',
+        userId: '',
+        distance: 0,
+        rating: 0,
+        text: '',
+      );
     }
     return historyList.elementAt(currentSelected);
   }

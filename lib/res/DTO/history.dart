@@ -7,19 +7,29 @@ class History {
   final String from_address;
   final String to_address;
   final String car_name;
+  final int rating;
+  final int distance;
+  final String text;
 
-  History(
-      {required this.userId,
-      required this.id,
-      required this.carId,
-      required this.price,
-      required this.date,
-      required this.from_address,
-      required this.to_address,
-      required this.car_name});
+  History({
+    required this.distance,
+    required this.rating,
+    required this.userId,
+    required this.id,
+    required this.carId,
+    required this.price,
+    required this.date,
+    required this.from_address,
+    required this.to_address,
+    required this.car_name,
+    required this.text,
+  });
 
   factory History.fromJson(Map<String, dynamic> json) {
     return History(
+        distance: json['distance'],
+        text: json['text'],
+        rating: json['rating'],
         userId: json['userId'],
         id: json['id'],
         carId: json['carId'],

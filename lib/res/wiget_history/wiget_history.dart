@@ -253,11 +253,14 @@ class _HistoryPageState extends State<HistoryPage> {
                                   alignment: AlignmentDirectional.centerStart,
                                   child: RatingBar.builder(
                                     ignoreGestures: true,
-                                    initialRating: 3,
+                                    initialRating: listHistory
+                                        .elementAt(index)
+                                        .rating
+                                        .toDouble(),
                                     itemSize: 25,
                                     minRating: 0,
                                     direction: Axis.horizontal,
-                                    // allowHalfRating: true,
+                                    allowHalfRating: true,
                                     itemCount: 5,
                                     // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                                     itemBuilder: (context, _) => Icon(

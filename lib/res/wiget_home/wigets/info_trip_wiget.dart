@@ -1,45 +1,67 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application/res/DTO/user.dart';
+import 'package:flutter_application/res/base/base.dart';
+import 'package:flutter_application/res/component/orientation.dart';
+import 'package:flutter_application/res/service/historyservice.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
 class InfoTrip extends StatefulWidget {
+  String from_address;
+  String to_address;
+  double expense;
+  DateTime datetime;
+  User user;
+  double distance;
+  Function() close;
+  InfoTrip(this.expense, this.from_address, this.to_address, this.datetime,
+      this.user, this.distance, this.close);
+
   @override
   State<InfoTrip> createState() => _InfoTripState();
 }
 
 class _InfoTripState extends State<InfoTrip> {
+  int rating = 1;
+  String text = "";
+  Base base = new Base();
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.zero,
       height: 300.0,
       child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
-          color: Color.fromARGB(136, 6, 54, 113),
-          // elevation: 5,
-          child: Container(
-            padding: EdgeInsets.all(15),
-            child: Column(children: <Widget>[
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        color: Colors.white,
+        // elevation: 5,
+        child: Container(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            children: <Widget>[
               Column(children: [
                 Stack(children: [
                   SizedBox(
                     width: double.infinity,
                     height: 56.0,
                     child: Center(
-                        child: Text("My Title",
+                        child: Text("Đánh giá chuyến đi",
                             style:
-                                TextStyle(fontSize: 22, color: Colors.white))),
+                                TextStyle(fontSize: 22, color: Colors.black))),
                   ),
                   Positioned(
-                      left: 0.0,
+                      right: 0.0,
                       top: 0.0,
                       child: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          iconSize: 30,
-                          color: Colors.white,
+                          icon: Image.asset("assets/images/ic_remove.png"),
+                          iconSize: 40,
+                          color: Colors.black,
                           onPressed: () {
                             Navigator.of(context).pop();
                           }))
@@ -75,45 +97,48 @@ class _InfoTripState extends State<InfoTrip> {
                                         Padding(
                                           padding: EdgeInsets.only(bottom: 2),
                                           child: Row(
-                                            children: const [
+                                            children: [
                                               Icon(Icons.location_on,
-                                                  size: 24.0,
-                                                  color: Colors.red),
+                                                  size: 18.0,
+                                                  color: Colors.green),
                                               Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 5),
-                                                child: Text("aaa",
+                                                child: Text(
+                                                    "Đến: " +
+                                                        widget.from_address,
                                                     style: TextStyle(
-                                                        fontSize: 20,
-                                                        color: Colors.white)),
+                                                        fontSize: 18,
+                                                        color: Colors.black)),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Align(
                                           alignment:
-                                              AlignmentDirectional(-0.92, 1),
+                                              AlignmentDirectional(-0.94, 1),
                                           child: Dash(
                                               direction: Axis.vertical,
                                               length: 19,
                                               dashLength: 2,
-                                              dashColor: Colors.white),
+                                              dashColor: Colors.black),
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(
                                               bottom: 10, top: 2),
                                           child: Row(
-                                            children: const [
+                                            children: [
                                               Icon(Icons.location_on,
-                                                  size: 24.0,
-                                                  color: Colors.green),
+                                                  size: 20.0,
+                                                  color: Colors.red),
                                               Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 5),
-                                                child: Text("bbb",
+                                                child: Text(
+                                                    "Từ: " + widget.to_address,
                                                     style: TextStyle(
-                                                        fontSize: 22,
-                                                        color: Colors.white)),
+                                                        fontSize: 18,
+                                                        color: Colors.black)),
                                               ),
                                             ],
                                           ),
@@ -132,10 +157,10 @@ class _InfoTripState extends State<InfoTrip> {
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xfff7f7f7),
+                            color: Colors.blueGrey,
                           ),
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           child: Center(
                             child: Image.asset("assets/images/ic_bus.png"),
                           ),
@@ -152,26 +177,26 @@ class _InfoTripState extends State<InfoTrip> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.date_range, size: 20.0, color: Colors.white),
+                        Icon(Icons.date_range, size: 20.0, color: Colors.black),
                         Padding(
                           padding: EdgeInsets.only(left: 5),
                           child: Text(
                               DateFormat('yyyy-MM-dd – kk:mm').format(
-                                  DateTime.parse(DateTime.now().toString())),
+                                  DateTime.parse(widget.datetime.toString())),
                               style:
-                                  TextStyle(fontSize: 22, color: Colors.white)),
+                                  TextStyle(fontSize: 18, color: Colors.black)),
                         ),
                       ],
                     ),
                     Row(
-                      children: const [
+                      children: [
                         Icon(Icons.price_change,
-                            size: 20.0, color: Colors.white),
+                            size: 20.0, color: Colors.black),
                         Padding(
                           padding: EdgeInsets.only(left: 5),
-                          child: Text(" VNĐ",
+                          child: Text(widget.expense.toString() + " VNĐ",
                               style:
-                                  TextStyle(fontSize: 22, color: Colors.white)),
+                                  TextStyle(fontSize: 18, color: Colors.black)),
                         ),
                       ],
                     ),
@@ -182,47 +207,120 @@ class _InfoTripState extends State<InfoTrip> {
                 padding: EdgeInsets.only(top: 15, bottom: 15),
                 child: Align(
                     alignment: AlignmentDirectional.centerStart,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Text("Xếp hạng & dánh giá :",
+                    child: OrientationSwitcher(children: [
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Row(children: [
+                          Icon(Icons.rate_review,
+                              size: 20.0, color: Colors.black),
+                          Padding(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(" Xếp hạng & đánh giá:",
                                 style: TextStyle(
-                                    fontSize: 22, color: Colors.white))),
-                        RatingBar.builder(
+                                    fontSize: 18, color: Colors.black)),
+                          ),
+                        ]),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: RatingBar.builder(
                           ignoreGestures: false,
                           initialRating: 1,
-                          itemSize: 50,
+                          itemSize: 40,
                           minRating: 0,
                           direction: Axis.horizontal,
-                          allowHalfRating: true,
+                          // allowHalfRating: true,
                           itemCount: 5,
                           // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                           itemBuilder: (context, _) => Icon(
                             Icons.star,
                             color: Colors.amber,
                           ),
-                          onRatingUpdate: (rating) {},
+                          onRatingUpdate: (_rating) {
+                            setState(
+                              () {
+                                rating = _rating.toInt();
+                              },
+                            );
+                          },
                         ),
-                      ],
+                      )
+                    ])),
+              ),
+              Align(
+                alignment: AlignmentDirectional.bottomCenter,
+                child: Padding(
+                    padding: EdgeInsets.only(top: 8, bottom: 8),
+                    child: TextField(
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Nhập đánh giá...',
+                      ),
                     )),
               ),
               Align(
-                  alignment: AlignmentDirectional.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 15, bottom: 15),
-                    child: SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text("aaa",
-                                style: TextStyle(
-                                    fontSize: 22, color: Colors.white)))),
-                  )),
-            ]),
-          )),
+                alignment: AlignmentDirectional.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        _postFeedback();
+                      },
+                      icon: isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Icon(Icons.send, color: Colors.white),
+                      label: Text(
+                        "Gửi đánh giá",
+                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      ),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.blueGrey)),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
+  }
+
+  _postFeedback() async {
+    setState(() {
+      isLoading = true;
+    });
+    await HistoryService.postHistory(
+            widget.user,
+            widget.from_address,
+            widget.to_address,
+            widget.datetime,
+            widget.expense,
+            rating,
+            widget.distance.toInt(),
+            text,
+            1)
+        .then((value) => {
+              if (value)
+                {
+                  widget.close,
+                  setState(() {
+                    isLoading = false;
+                  }),
+                  base.showToastSucces(context, 'Đã gửi đánh giá  !'),
+                  Navigator.of(context).pop(),
+                }
+              else
+                {throw new Exception('Không thể lấy dữ liệu')}
+            });
   }
 }

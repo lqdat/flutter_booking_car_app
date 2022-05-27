@@ -30,6 +30,8 @@ class _HomePage extends State<HomePage> {
   PolylinePoints polylinePoints = PolylinePoints();
   Set<Marker> setMarket = {};
   Set<Polyline> setPolyline = {};
+  String fr_name = "";
+  String t_name = "";
   @override
   void initState() {
     super.initState();
@@ -109,7 +111,8 @@ class _HomePage extends State<HomePage> {
                           right: 20,
                           bottom: 20,
                           height: 240,
-                          child: CarWiget(_tripDistance),
+                          child: CarWiget(_tripDistance, fr_name, t_name,
+                              widget.user, () => closeAndRemoveAll()),
                         )
                       ],
                     ),
@@ -122,9 +125,27 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  void closeAndRemoveAll() {
+    setState(() {
+      setMarket.removeAll({MarkerId("from_address"), MarkerId("to_address")});
+      setPolyline.removeAll({PolylineId("polyline")});
+      _tripDistance = 0;
+    });
+    print(_tripDistance);
+  }
+
   void receiceData(MapBoxPlace data, _isFrAddress) {
     _mapboxPlace = data;
     _isFromAddress = _isFrAddress;
+    if (_isFrAddress) {
+      setState(() {
+        fr_name = data.text.toString();
+      });
+    } else {
+      setState(() {
+        t_name = data.text.toString();
+      });
+    }
     onPlaceSelected(_mapboxPlace, _isFromAddress);
   }
 

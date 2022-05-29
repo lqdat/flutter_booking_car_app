@@ -9,6 +9,7 @@ import 'package:flutter_application/res/stream/history_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:tiengviet/tiengviet.dart';
 
 class HistoryPage extends StatefulWidget {
   User user;
@@ -26,6 +27,11 @@ class _HistoryPageState extends State<HistoryPage> {
       isLoading = true;
     });
     await HistoryService.getHistory(widget.user).then((value) => setState(() {
+          value.sort((a, b) {
+            DateTime aDate = DateTime.parse(a.date);
+            DateTime bDate = DateTime.parse(b.date);
+            return bDate.compareTo(aDate);
+          });
           setState(() {
             listHistory = value;
             isLoading = false;
@@ -36,6 +42,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
+
     getlistHistory();
   }
 

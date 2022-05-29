@@ -19,6 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  late LatLng currentPosition;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   late Future<Position> _dataPosition;
   String selectedAddress = "";
@@ -127,6 +128,8 @@ class _HomePage extends State<HomePage> {
   }
 
   void closeAndRemoveAll() {
+    _dataPosition = getPositonCur();
+    _mapController.moveCamera(CameraUpdate.newLatLng(currentPosition));
     setState(() {
       _mapboxPlace = new MapBoxPlace();
       setMarket = {};
@@ -281,6 +284,9 @@ class _HomePage extends State<HomePage> {
 
   Future<Position> getPositonCur() async {
     Position position = await _getGeoLocationPosition();
+    setState(() {
+      currentPosition = new LatLng(position.latitude, position.longitude);
+    });
     return position;
   }
 }

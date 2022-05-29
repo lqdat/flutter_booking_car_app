@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_application/res/DTO/history.dart';
 import 'package:flutter_application/res/DTO/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:tiengviet/tiengviet.dart';
 
 class HistoryService {
   static Future<List<History>> getHistory(User user) async {
@@ -41,8 +42,8 @@ class HistoryService {
       Uri.parse(url),
       body: jsonEncode({
         "createdAt": DateTime.now().toString(),
-        "from_address": form_add,
-        "to_address": to_add,
+        "from_address": TiengViet.parse(form_add),
+        "to_address": TiengViet.parse(to_add),
         "price": cast,
         "date": datetime.toString(),
         "distance": distance,

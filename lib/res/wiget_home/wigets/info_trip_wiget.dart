@@ -317,9 +317,9 @@ class _InfoTripState extends State<InfoTrip> {
                   setState(() {
                     isLoading = false;
                   }),
-                  widget.close(),
                   base.showToastSucces(context, 'Đã gửi đánh giá  !'),
                   Navigator.of(context).pop(),
+                  widget.close(),
                 }
               else
                 {throw new Exception('Không thể lấy dữ liệu')}

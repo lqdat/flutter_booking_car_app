@@ -1,3 +1,5 @@
+import 'package:tiengviet/tiengviet.dart';
+
 class History {
   final String userId;
   final String id;
@@ -35,8 +37,8 @@ class History {
         carId: json['carId'],
         price: json['price'],
         date: json['date'],
-        from_address: json['from_address'],
+        from_address: TiengViet.parse(json['from_address']),
         car_name: json['car_name'],
-        to_address: json['to_address']);
+        to_address: TiengViet.parse(json['to_address']));
   }
 }

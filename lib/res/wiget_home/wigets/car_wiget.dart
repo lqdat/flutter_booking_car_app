@@ -171,7 +171,7 @@ class _CarWigetState extends State<CarWiget> {
                                     DateTime.now(),
                                     widget.user,
                                     widget.distance,
-                                    () => widget.close),
+                                    () => closeCar()),
                               );
                             },
                           );
@@ -187,6 +187,10 @@ class _CarWigetState extends State<CarWiget> {
         );
       },
     );
+  }
+
+  void closeCar() {
+    widget.close();
   }
 
   String _getDistanceInfo() {

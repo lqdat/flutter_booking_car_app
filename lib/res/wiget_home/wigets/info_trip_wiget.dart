@@ -252,6 +252,7 @@ class _InfoTripState extends State<InfoTrip> {
                 child: Padding(
                     padding: EdgeInsets.only(top: 8, bottom: 8),
                     child: TextField(
+                      onChanged: (value) => {setState((() => text = value))},
                       keyboardType: TextInputType.multiline,
                       minLines: 1,
                       maxLines: 1,
@@ -310,12 +311,13 @@ class _InfoTripState extends State<InfoTrip> {
             text,
             1)
         .then((value) => {
-              if (value)
+              print(value),
+              if (value == true)
                 {
-                  widget.close,
                   setState(() {
                     isLoading = false;
                   }),
+                  widget.close(),
                   base.showToastSucces(context, 'Đã gửi đánh giá  !'),
                   Navigator.of(context).pop(),
                 }

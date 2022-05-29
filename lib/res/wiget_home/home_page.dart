@@ -32,6 +32,7 @@ class _HomePage extends State<HomePage> {
   Set<Polyline> setPolyline = {};
   String fr_name = "";
   String t_name = "";
+  var ride_wiget;
   @override
   void initState() {
     super.initState();
@@ -127,11 +128,11 @@ class _HomePage extends State<HomePage> {
 
   void closeAndRemoveAll() {
     setState(() {
-      setMarket.removeAll({MarkerId("from_address"), MarkerId("to_address")});
-      setPolyline.removeAll({PolylineId("polyline")});
+      _mapboxPlace = new MapBoxPlace();
+      setMarket = {};
+      setPolyline = {};
       _tripDistance = 0;
     });
-    print(_tripDistance);
   }
 
   void receiceData(MapBoxPlace data, _isFrAddress) {

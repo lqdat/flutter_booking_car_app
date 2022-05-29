@@ -2,7 +2,7 @@ class History {
   final String userId;
   final String id;
   final int carId;
-  final double price;
+  final int price;
   final String date;
   final String from_address;
   final String to_address;

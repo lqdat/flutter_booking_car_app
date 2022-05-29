@@ -46,6 +46,7 @@ class HistoryService {
         "price": cast,
         "date": datetime.toString(),
         "distance": distance,
+        "rating": rating,
         "text": text,
         "id": DateTime.now().millisecond.toString(),
       }),

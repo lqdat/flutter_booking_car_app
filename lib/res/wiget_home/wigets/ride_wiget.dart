@@ -5,15 +5,19 @@ import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 
 class RiderWiget extends StatefulWidget {
   String selectedAddress;
+
   final Function(MapBoxPlace, bool) onSelect;
 
-  RiderWiget(this.selectedAddress, this.onSelect);
+  RiderWiget(
+    this.selectedAddress,
+    this.onSelect,
+  );
 
   @override
-  __RiderWiget createState() => __RiderWiget();
+  _RiderWiget createState() => _RiderWiget();
 }
 
-class __RiderWiget extends State<RiderWiget> {
+class _RiderWiget extends State<RiderWiget> {
   var placeFrom = "";
   var placeTo = "";
 
@@ -25,6 +29,13 @@ class __RiderWiget extends State<RiderWiget> {
   void calbackDataTo(MapBoxPlace placeto) {
     widget.onSelect(placeto, false);
     widget.selectedAddress = placeto.placeName!;
+  }
+
+  void removeSelected() {
+    setState(() {
+      placeFrom = "";
+      placeTo = "";
+    });
   }
 
   @override

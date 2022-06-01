@@ -62,4 +62,24 @@ class HistoryService {
       return false;
     }
   }
+
+  static Future<bool> deleteHistory(
+    User user,
+    String param,
+  ) async {
+    String url =
+        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history/${param}";
+    var res = await http.delete(
+      Uri.parse(url),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
+
+    if (res.statusCode == 201 || res.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

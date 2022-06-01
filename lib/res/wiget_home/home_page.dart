@@ -33,10 +33,11 @@ class _HomePage extends State<HomePage> {
   Set<Polyline> setPolyline = {};
   String fr_name = "";
   String t_name = "";
-  var ride_wiget;
   @override
   void initState() {
     super.initState();
+    getPositonCur();
+
     _dataPosition = _getGeoLocationPosition();
   }
 
@@ -103,7 +104,9 @@ class _HomePage extends State<HomePage> {
                                 child: RiderWiget(
                                     selectedAddress,
                                     (data, isFrAdrress) =>
-                                        receiceData(data, isFrAdrress)),
+                                        receiceData(data, isFrAdrress),
+                                    fr_name,
+                                    t_name),
                               )
                             ],
                           ),
@@ -128,13 +131,16 @@ class _HomePage extends State<HomePage> {
   }
 
   void closeAndRemoveAll() {
-    _dataPosition = getPositonCur();
-    _mapController.moveCamera(CameraUpdate.newLatLng(currentPosition));
+    _mapController.animateCamera(
+      CameraUpdate.newLatLng(currentPosition),
+    );
     setState(() {
       _mapboxPlace = new MapBoxPlace();
       setMarket = {};
       setPolyline = {};
       _tripDistance = 0;
+      fr_name = "";
+      t_name = "";
     });
   }
 
@@ -142,6 +148,7 @@ class _HomePage extends State<HomePage> {
     _mapboxPlace = data;
     _isFromAddress = _isFrAddress;
     if (_isFrAddress) {
+      print("aaaaaaaa");
       setState(() {
         fr_name = data.text.toString();
       });
@@ -287,6 +294,7 @@ class _HomePage extends State<HomePage> {
     setState(() {
       currentPosition = new LatLng(position.latitude, position.longitude);
     });
+    print({currentPosition.latitude, currentPosition.longitude});
     return position;
   }
 }

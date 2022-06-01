@@ -77,7 +77,7 @@ class _MenuWiget extends State<MenuWiget> {
           onPressed: () {},
           child: ListTile(
             leading: Image.asset("assets/images/ic_discount.png"),
-            title: Text("Voucher",
+            title: Text("Mã giảm giá",
                 style: TextStyle(fontSize: 18, color: Colors.black)),
           ),
           style: ButtonStyle(

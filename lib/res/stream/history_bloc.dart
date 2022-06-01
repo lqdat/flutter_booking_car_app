@@ -6,7 +6,7 @@ import 'package:flutter_application/res/DTO/car.dart';
 import 'package:flutter_application/res/DTO/history.dart';
 
 class HistoryStream {
-  final _selectedController = new StreamController();
+  StreamController _selectedController = new StreamController.broadcast();
 
   get stream => _selectedController.stream;
 

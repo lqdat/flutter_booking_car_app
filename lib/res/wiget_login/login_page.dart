@@ -153,22 +153,23 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
                   child: RichText(
                     text: TextSpan(
-                        text: "Chưa có tài khoản? ",
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RegisterPage()));
-                                },
-                              text: "Đăng ký ",
-                              style: TextStyle(
-                                  color: Colors.blueAccent, fontSize: 18))
-                        ]),
+                      text: "Chưa có tài khoản? ",
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterPage()));
+                            },
+                          text: "Đăng ký ",
+                          style:
+                              TextStyle(color: Colors.blueAccent, fontSize: 18),
+                        )
+                      ],
+                    ),
                   ))
             ],
           ))),
@@ -187,7 +188,6 @@ class _LoginPageState extends State<LoginPage> {
       check.then((value) => {
             if (value != null)
               {
-                print(value),
                 setState(() {
                   isLoading = false;
                   user = value as User;

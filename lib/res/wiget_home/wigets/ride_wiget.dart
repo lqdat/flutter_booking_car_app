@@ -7,11 +7,11 @@ class RiderWiget extends StatefulWidget {
   String selectedAddress;
 
   final Function(MapBoxPlace, bool) onSelect;
+  String _placeFrom;
+  String _placeTo;
 
   RiderWiget(
-    this.selectedAddress,
-    this.onSelect,
-  );
+      this.selectedAddress, this.onSelect, this._placeFrom, this._placeTo);
 
   @override
   _RiderWiget createState() => _RiderWiget();
@@ -105,7 +105,7 @@ class _RiderWiget extends State<RiderWiget> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        placeFrom != "" ? "Đến: " + placeFrom : "Chọn điểm đến",
+                        getText(widget._placeFrom, "Chọn điểm đến", true),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
@@ -166,7 +166,7 @@ class _RiderWiget extends State<RiderWiget> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        placeTo != "" ? "Từ: " + placeTo : "Chọn điểm đi",
+                        getText(widget._placeTo, "Chọn điểm đi", false),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
@@ -179,5 +179,16 @@ class _RiderWiget extends State<RiderWiget> {
         ],
       ),
     );
+  }
+
+  String getText(String placeName, String hint, bool fr_add) {
+    String rs;
+    if (placeName != "") {
+      print(placeName);
+      rs = fr_add ? "Đến: " + placeName : "Đi: " + placeName;
+    } else {
+      rs = hint;
+    }
+    return rs;
   }
 }

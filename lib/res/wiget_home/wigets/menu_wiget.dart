@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/user.dart';
+import 'package:flutter_application/res/wiget_coupon/wiget_coupon.dart';
 import 'package:flutter_application/res/wiget_history/wiget_history.dart';
 import 'package:flutter_application/res/wiget_login/login_page.dart';
 import 'package:flutter_application/res/wiget_profile/wiget_profile.dart';
@@ -74,7 +75,10 @@ class _MenuWiget extends State<MenuWiget> {
           ),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => WidgetCoupon()));
+          },
           child: ListTile(
             leading: Image.asset("assets/images/ic_discount.png"),
             title: Text("Mã giảm giá",

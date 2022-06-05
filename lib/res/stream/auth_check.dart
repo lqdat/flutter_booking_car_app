@@ -52,7 +52,8 @@ class AuthCheck {
               username: userList[i].username,
               email: userList[i].email,
               password: userList[i].password,
-              phone: userList[i].phone);
+              phone: userList[i].phone,
+              name: userList[i].name);
           return user;
         }
       }

@@ -22,7 +22,7 @@ class CarStream {
 
   Car getCurrentCar(List<Car> carList) {
     if (carList.isEmpty) {
-      return Car(name: "", price: 0);
+      return Car(name: "", price: 0, id: "");
     }
     return carList.elementAt(currentSelected);
   }

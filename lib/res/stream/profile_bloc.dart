@@ -3,10 +3,10 @@
 import 'dart:async';
 
 class ProfileBloc {
-  StreamController _nameController = new StreamController();
-  StreamController _emailController = new StreamController();
-  StreamController _usernameController = new StreamController();
-  StreamController _phoneController = new StreamController();
+  StreamController _nameController = new StreamController.broadcast();
+  StreamController _emailController = new StreamController.broadcast();
+  StreamController _usernameController = new StreamController.broadcast();
+  StreamController _phoneController = new StreamController.broadcast();
 
   Stream get nameStream => _nameController.stream;
   Stream get usernameStream => _usernameController.stream;

@@ -93,15 +93,20 @@ class _RiderWiget extends State<RiderWiget> {
                         child: Icon(Icons.location_pin, color: Colors.green),
                       ),
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      width: 40,
-                      height: 50,
-                      child: Center(
-                        child: Image.asset("assets/images/ic_remove.png"),
-                      ),
-                    ),
+                    // Positioned(
+                    //   right: 0,
+                    //   top: 0,
+                    //   width: 40,
+                    //   height: 50,
+                    //   child: IconButton(
+                    //     icon: Image.asset(
+                    //       "assets/images/ic_remove.png",
+                    //     ),
+                    //     onPressed: () {
+                    //       getText("", "Chọn điểm đến", true);
+                    //     },
+                    //   ),
+                    // ),
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
@@ -154,15 +159,22 @@ class _RiderWiget extends State<RiderWiget> {
                         child: Icon(Icons.location_pin, color: Colors.red),
                       ),
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      width: 40,
-                      height: 50,
-                      child: Center(
-                        child: Image.asset("assets/images/ic_remove.png"),
-                      ),
-                    ),
+                    // Positioned(
+                    //   right: 0,
+                    //   top: 0,
+                    //   width: 40,
+                    //   height: 50,
+                    //   child: Center(
+                    //     child: IconButton(
+                    //       icon: Image.asset(
+                    //         "assets/images/ic_remove.png",
+                    //       ),
+                    //       onPressed: () {
+                    //         getText("", "Chọn điểm đi", false);
+                    //       },
+                    //     ),
+                    //   ),
+                    // ),
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(

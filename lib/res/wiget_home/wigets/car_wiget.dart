@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/car.dart';
 import 'package:flutter_application/res/DTO/user.dart';
+import 'package:flutter_application/res/base/base.dart';
 import 'package:flutter_application/res/service/carservice.dart';
+import 'package:flutter_application/res/service/historyservice.dart';
 import 'package:flutter_application/res/stream/car_steam.dart';
 import 'package:flutter_application/res/wiget_home/wigets/info_trip_wiget.dart';
 
@@ -20,7 +22,9 @@ class CarWiget extends StatefulWidget {
 }
 
 class _CarWigetState extends State<CarWiget> {
+  Base base = new Base();
   final _carStream = new CarStream();
+  bool isLoading = false;
   List<Car> listCar = [];
   void getlistCar() async {
     await CarService.getCar().then((value) => setState(() {
@@ -76,9 +80,7 @@ class _CarWigetState extends State<CarWiget> {
                             width: 64,
                             height: 64,
                             child: Center(
-                              child: index == 2
-                                  ? Image.asset("assets/images/ic_car_red.png")
-                                  : Image.asset("assets/images/ic_bus.png"),
+                              child: getImageCar(index),
                             ),
                           ),
                           Text(
@@ -140,41 +142,18 @@ class _CarWigetState extends State<CarWiget> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  child: Text(
-                    "Chọn",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
+                  child: isLoading
+                      ? CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : Text(
+                          "Chọn",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                   onPressed: widget.distance == 0
                       ? null
                       : () {
-                          showModalBottomSheet<void>(
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                            ),
-                            backgroundColor: Colors.white,
-                            isDismissible: false,
-                            // enableDrag: false,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                padding: EdgeInsets.zero,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30)),
-                                ),
-                                height: 500,
-                                child: InfoTrip(
-                                    _getTotal(),
-                                    widget.from_address,
-                                    widget.to_address,
-                                    DateTime.now(),
-                                    widget.user,
-                                    widget.distance,
-                                    () => closeCar()),
-                              );
-                            },
-                          );
+                          _postOrder();
                         },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
@@ -187,6 +166,22 @@ class _CarWigetState extends State<CarWiget> {
         );
       },
     );
+  }
+
+  Image? getImageCar(int index) {
+    String id = listCar.elementAt(index).id.toString();
+    switch (id) {
+      case "1":
+        return Image.asset("assets/images/ic_car_blue.png");
+      case "2":
+        return Image.asset("assets/images/ic_car_red.png");
+      case "3":
+        return Image.asset("assets/images/ic_car_green.png");
+      case "4":
+        return Image.asset("assets/images/ic_bus.png");
+      default:
+        return null;
+    }
   }
 
   void closeCar() {
@@ -203,5 +198,57 @@ class _CarWigetState extends State<CarWiget> {
     return (distanceInKM.roundToDouble() *
         _carStream.getCurrentCar(listCar).price /
         1000);
+  }
+
+  _postOrder() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await HistoryService.postHistory(
+            widget.user,
+            widget.from_address,
+            widget.to_address,
+            DateTime.now(),
+            _getTotal(),
+            0,
+            widget.distance.toInt(),
+            "",
+            _carStream.getCurrentCar(listCar).id,
+            false)
+        .then((value) => {
+              if (value != null)
+                {
+                  setState(() {
+                    isLoading = false;
+                  }),
+                  base.showToastSucces(context, 'Đã đặt xe thành công  !'),
+                  showModalBottomSheet<void>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                    backgroundColor: Colors.white,
+                    isDismissible: false,
+                    // enableDrag: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        padding: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        height: 500,
+                        child: InfoTrip(
+                          value.id,
+                          widget.user,
+                        ),
+                      );
+                    },
+                  ),
+                  widget.close(),
+                }
+              else
+                {throw new Exception('Không thể lấy dữ liệu')}
+            });
   }
 }

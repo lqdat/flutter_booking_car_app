@@ -24,7 +24,7 @@ class _RegisterPage extends State<RegisterPage> {
   TextEditingController _phoneController = new TextEditingController();
   TextEditingController _emailController = new TextEditingController();
   bool isShow = false;
-
+  bool isLoading = false;
   @override
   void dispose() {
     authVali.dispose();
@@ -171,11 +171,22 @@ class _RegisterPage extends State<RegisterPage> {
                   child: SizedBox(
                       width: double.infinity,
                       height: 52,
-                      child: ElevatedButton(
+                      child: ElevatedButton.icon(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromRGBO(6, 54, 113, 1)),
+                          shadowColor: MaterialStateProperty.all<Color>(
+                              Color.fromRGBO(6, 54, 113, 1)),
+                        ),
+                        icon: isLoading
+                            ? CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Icon(Icons.person_add_alt),
                         onPressed: () {
                           _onSignUpPress();
                         },
-                        child: Text("Đăng ký",
+                        label: Text("Đăng ký",
                             style:
                                 TextStyle(fontSize: 25, color: Colors.white)),
                       ))),
@@ -203,6 +214,9 @@ class _RegisterPage extends State<RegisterPage> {
 
   void fetchPostUser(
       String username, String password, String email, String phone) async {
+    setState(() {
+      isLoading = true;
+    });
     final res = await http.post(
       Uri.parse('https://627b30e4b54fe6ee00839593.mockapi.io/user'),
       body: jsonEncode({
@@ -219,6 +233,9 @@ class _RegisterPage extends State<RegisterPage> {
     );
 
     if (res.statusCode == 201 || res.statusCode == 200) {
+      setState(() {
+        isLoading = false;
+      });
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
       base.showToastSucces(context, 'Đăng ký thành công !');

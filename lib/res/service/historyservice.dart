@@ -26,7 +26,7 @@ class HistoryService {
     }
   }
 
-  static Future<bool> postHistory(
+  static Future<History?> postHistory(
       User user,
       String form_add,
       String to_add,
@@ -35,7 +35,8 @@ class HistoryService {
       int rating,
       int distance,
       String text,
-      int carId) async {
+      String carId,
+      bool status) async {
     String url =
         "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history";
     var res = await http.post(
@@ -50,6 +51,8 @@ class HistoryService {
         "rating": rating,
         "text": text,
         "id": DateTime.now().millisecond.toString(),
+        "carId": carId.toString(),
+        "status": status,
       }),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
@@ -57,6 +60,48 @@ class HistoryService {
     );
 
     if (res.statusCode == 201) {
+      dynamic rs = json.decode(res.body);
+      History history = History.fromJson(rs);
+      return history;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<bool> putHistory(
+      User user,
+      String form_add,
+      String to_add,
+      DateTime datetime,
+      double cast,
+      int rating,
+      int distance,
+      String text,
+      int carId,
+      String historyId,
+      bool status) async {
+    String url =
+        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history/${historyId}";
+    var res = await http.put(
+      Uri.parse(url),
+      body: jsonEncode({
+        "createdAt": DateTime.now().toString(),
+        "from_address": TiengViet.parse(form_add),
+        "to_address": TiengViet.parse(to_add),
+        "price": cast,
+        "date": datetime.toString(),
+        "distance": distance,
+        "rating": rating,
+        "text": text,
+        "id": DateTime.now().millisecond.toString(),
+        "status": status,
+      }),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
+
+    if (res.statusCode == 201 || res.statusCode == 200) {
       return true;
     } else {
       return false;
@@ -80,6 +125,25 @@ class HistoryService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  static Future<History?> getHistorybyId(User user, String Id) async {
+    String url =
+        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history/${Id}";
+    var res = await http.get(
+      Uri.parse(url),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
+
+    if (res.statusCode == 200) {
+      dynamic rs = json.decode(res.body);
+      History historyList = History.fromJson(rs);
+      return historyList;
+    } else {
+      return null;
     }
   }
 }

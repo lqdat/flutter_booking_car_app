@@ -25,7 +25,7 @@ class HistoryStream {
     if (historyList.isEmpty) {
       return History(
         car_name: '',
-        carId: 0,
+        carId: "",
         date: '',
         from_address: '',
         id: '',
@@ -35,6 +35,7 @@ class HistoryStream {
         distance: 0,
         rating: 0,
         text: '',
+        status: false,
       );
     }
     return historyList.elementAt(currentSelected);

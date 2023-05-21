@@ -5,8 +5,13 @@ import 'package:flutter_application/res/service/couponservice.dart';
 import 'package:flutter_application/res/stream/coupon_bloc.dart';
 import 'package:flutter_application/res/wiget_coupon/coupon.dart';
 
+import '../DTO/user.dart';
+import '../component/loading_wiget.dart';
+
 class WidgetCoupon extends StatefulWidget {
   @override
+  User user;
+  WidgetCoupon(this.user);
   State<WidgetCoupon> createState() => _WidgetCouponState();
 }
 
@@ -19,10 +24,10 @@ class _WidgetCouponState extends State<WidgetCoupon> {
     setState(() {
       isLoading = true;
     });
-    await CouponService.getCoupon().then((value) => setState(() {
+    await CouponService.getCoupon(widget.user).then((value) => setState(() {
           value.sort((a, b) {
-            DateTime aDate = DateTime.parse(a.expiration_Date);
-            DateTime bDate = DateTime.parse(b.expiration_Date);
+            DateTime aDate = DateTime.parse(a.expirationDate);
+            DateTime bDate = DateTime.parse(b.expirationDate);
             return bDate.compareTo(aDate);
           });
           setState(() {
@@ -57,7 +62,7 @@ class _WidgetCouponState extends State<WidgetCoupon> {
                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
           ),
         ),
-        body: Container(
+        body: isLoading? LoaderTransparent(Colors.grey.shade800): Container(
             padding: const EdgeInsets.fromLTRB(16, 50, 16, 0),
             child: listCoupon.length > 0
                 ? StreamBuilder(
@@ -65,7 +70,7 @@ class _WidgetCouponState extends State<WidgetCoupon> {
                     builder: (context, snapshot) {
                       return new ListView.builder(
                         itemBuilder: (context, index) {
-                          return HorizontalCouponExample1();
+                          return HorizontalCoupon(listCoupon[index]);
                         },
                         itemCount: listCoupon.length,
                         scrollDirection: Axis.vertical,

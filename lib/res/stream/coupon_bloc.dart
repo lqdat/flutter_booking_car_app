@@ -23,10 +23,10 @@ class CouponStream {
   Coupon getCurrentCar(List<Coupon> CouponList) {
     if (CouponList.isEmpty) {
       return Coupon(
-        expiration_Date: '',
+        expirationDate: '',
         name: '',
         id: '',
-        code: '',
+        Code: '',
         prepayment: 0,
       );
     }

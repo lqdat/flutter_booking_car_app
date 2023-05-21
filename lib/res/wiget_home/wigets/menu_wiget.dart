@@ -7,6 +7,8 @@ import 'package:flutter_application/res/wiget_history/wiget_history.dart';
 import 'package:flutter_application/res/wiget_login/login_page.dart';
 import 'package:flutter_application/res/wiget_profile/wiget_profile.dart';
 
+import '../../wiget_hub/hub.dart';
+
 class MenuWiget extends StatefulWidget {
   User user;
   MenuWiget(this.user);
@@ -62,7 +64,13 @@ class _MenuWiget extends State<MenuWiget> {
           ),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+             Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SignalR()));
+          
+          },
           child: ListTile(
             leading: Image.asset("assets/images/ic_notification.png"),
             title: Text("Thông báo",
@@ -77,7 +85,7 @@ class _MenuWiget extends State<MenuWiget> {
         ElevatedButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => WidgetCoupon()));
+                MaterialPageRoute(builder: (context) => WidgetCoupon(widget.user)));
           },
           child: ListTile(
             leading: Image.asset("assets/images/ic_discount.png"),

@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
-
+import '../base/const.dart' as Constants;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/base/base.dart';
@@ -19,6 +19,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPage extends State<RegisterPage> {
   AuthValid authVali = new AuthValid();
   Base base = new Base();
+  TextEditingController _usernameController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _phoneController = new TextEditingController();
@@ -64,6 +65,29 @@ class _RegisterPage extends State<RegisterPage> {
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
                 child: StreamBuilder(
+                  stream: authVali.usernameStream,
+                  builder: (context, snapshot) => TextField(
+                    controller: _usernameController,
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    decoration: InputDecoration(
+                      errorText:
+                          snapshot.hasError ? snapshot.error.toString() : null,
+                      labelText: "Tên đăng nhập",
+                      prefixIcon: SizedBox(
+                        width: 50,
+                        child: Image.asset('assets/images/ic_username.png'),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
+                child: StreamBuilder(
                   stream: authVali.nameStream,
                   builder: (context, snapshot) => TextField(
                     controller: _nameController,
@@ -71,7 +95,7 @@ class _RegisterPage extends State<RegisterPage> {
                     decoration: InputDecoration(
                       errorText:
                           snapshot.hasError ? snapshot.error.toString() : null,
-                      labelText: "Tài Khoản",
+                      labelText: "Họ và tên",
                       prefixIcon: SizedBox(
                         width: 50,
                         child: Image.asset('assets/images/ic_username.png'),
@@ -213,22 +237,21 @@ class _RegisterPage extends State<RegisterPage> {
   }
 
   void fetchPostUser(
-      String username, String password, String email, String phone) async {
+      String username, String name,String password, String email, String phone) async {
     setState(() {
       isLoading = true;
     });
+    var map = new Map<String, dynamic>();
+map['TenDangNhap'] = username;
+map['MatKhau'] = password;
+map['HoTen'] = name;
+map['Email'] = email;
+map['SDT'] = phone;
     final res = await http.post(
-      Uri.parse('https://627b30e4b54fe6ee00839593.mockapi.io/user'),
-      body: jsonEncode({
-        "createdAt": DateTime.now().toString(),
-        "username": username,
-        "sdt": phone,
-        "email": email,
-        "password": password,
-        "id": DateTime.now().millisecond.toString()
-      }),
+      Uri.parse(Constants.URl+'/QuanLyTaiKhoan/DangKy'),
+      body: jsonEncode(map),
       headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
       },
     );
 
@@ -240,15 +263,18 @@ class _RegisterPage extends State<RegisterPage> {
           context, MaterialPageRoute(builder: (context) => LoginPage()));
       base.showToastSucces(context, 'Đăng ký thành công !');
     } else {
-      throw new Exception('Không thể lấy dữ liệu');
+      setState(() {
+        isLoading = false;
+      });
+      base.showToastError(context, 'Đăng ký không thành công !');
     }
   }
 
   _onSignUpPress() {
-    var isValid = authVali.isValid(_nameController.text,
+    var isValid = authVali.isValid(_usernameController.text,_nameController.text,
         _passwordController.text, _phoneController.text, _emailController.text);
     if (isValid) {
-      fetchPostUser(_nameController.text, _passwordController.text,
+      fetchPostUser(_usernameController.text,_nameController.text, _passwordController.text,
           _emailController.text, _phoneController.text);
     }
   }

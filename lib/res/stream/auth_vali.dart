@@ -3,17 +3,24 @@
 import 'dart:async';
 
 class AuthValid {
+  StreamController _userameController = new StreamController();
   StreamController _nameController = new StreamController();
   StreamController _emailController = new StreamController();
   StreamController _passwordController = new StreamController();
   StreamController _phoneController = new StreamController();
 
+Stream get usernameStream => _userameController.stream;
   Stream get nameStream => _nameController.stream;
   Stream get emailStream => _emailController.stream;
   Stream get passwordStream => _passwordController.stream;
   Stream get phoneStream => _phoneController.stream;
 
-  bool isValid(String name, String password, String phone, String email) {
+  bool isValid(String userName ,String name, String password, String phone, String email) {
+
+    if (userName.isEmpty) {
+      _nameController.sink.addError("Vui lòng nhập tên đăng nhập");
+      return false;
+    }
     if (name.isEmpty) {
       _nameController.sink.addError("Vui lòng nhập tên");
       return false;
@@ -30,7 +37,7 @@ class AuthValid {
     }
     _phoneController.sink.add("");
     if (email.isEmpty) {
-      _emailController.sink.addError("Vui lòng nhập tên");
+      _emailController.sink.addError("Vui lòng nhập email");
       return false;
     }
     _emailController.sink.add("");
@@ -39,6 +46,7 @@ class AuthValid {
   }
 
   void dispose() {
+    _userameController.close();
     _passwordController.close();
     _nameController.close();
     _phoneController.close();

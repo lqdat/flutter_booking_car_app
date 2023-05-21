@@ -4,23 +4,23 @@ class Coupon {
   final String id;
   final int prepayment;
   final String name;
-  final String code;
-  final String expiration_Date;
+  final String Code;
+  final String expirationDate;
 
   Coupon(
       {required this.id,
       required this.prepayment,
       required this.name,
-      required this.code,
-      required this.expiration_Date});
+      required this.Code,
+      required this.expirationDate});
 
   factory Coupon.fromJson(Map<String, dynamic> json) {
     return Coupon(
-      id: json['id'],
-      prepayment: json['prepayment'],
-      name: TiengViet.parse(json['name']),
-      code: json['code'],
-      expiration_Date: json['expirationDate'],
+      id: json['Id'],
+      prepayment: json['Prepayment'],
+      name: json['Name'],
+      Code: json['Code'],
+      expirationDate: json['expretionDate'].toString(),
     );
   }
 }

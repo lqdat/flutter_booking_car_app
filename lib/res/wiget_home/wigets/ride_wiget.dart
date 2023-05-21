@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 
+// ignore: must_be_immutable
 class RiderWiget extends StatefulWidget {
   String selectedAddress;
 

@@ -34,18 +34,15 @@ class _ProfilePage extends State<ProfilePage> {
       isLoading = true;
     });
     UserService.getInfobyId(widget.user.userId).then((value) => {
-          if (value != null)
-            {
-              _usernameController =
-                  new TextEditingController(text: value.username),
-              _nameController = new TextEditingController(text: value.name),
-              _phoneController = new TextEditingController(text: value.phone),
-              _emailController = new TextEditingController(text: value.email),
-              setState((() {
-                password = value.password;
-                isLoading = false;
-              }))
-            }
+          _usernameController =
+              new TextEditingController(text: widget.user.userName),
+          _nameController = new TextEditingController(text: value?.name),
+          _phoneController = new TextEditingController(text: value?.phone),
+          _emailController = new TextEditingController(text: value?.email),
+          setState((() {
+            password = "";
+            isLoading = false;
+          }))
         });
   }
 
@@ -388,15 +385,8 @@ class _ProfilePage extends State<ProfilePage> {
     var isValid = profile_bloc.isValid(
         _nameController.text, _phoneController.text, _emailController.text);
     if (isValid) {
-      // fetchPostUser(_nameController.text, _passwordController.text,
-      //     _emailController.text, _phoneController.text);
-      UserService.putUser(
-              widget.user.userId,
-              _nameController.text,
-              _emailController.text,
-              _phoneController.text,
-              password,
-              _usernameController.text)
+      UserService.putUser(_nameController.text, _emailController.text,
+              _phoneController.text, widget.user.userId)
           .then((value) => {
                 if (value)
                   {
@@ -405,7 +395,7 @@ class _ProfilePage extends State<ProfilePage> {
                   }
               });
     } else {
-      base.showToastError(context, 'không thể cập nhật thông tin');
+      base.showToastError(context, 'Không thể cập nhật thông tin');
     }
   }
 }

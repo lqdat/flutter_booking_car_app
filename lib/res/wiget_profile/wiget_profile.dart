@@ -8,6 +8,7 @@ import 'package:flutter_application/res/base/base.dart';
 import 'package:flutter_application/res/component/loading_wiget.dart';
 import 'package:flutter_application/res/service/userservice.dart';
 import 'package:flutter_application/res/stream/profile_bloc.dart';
+import 'package:flutter_application/res/wiget_profile/changepass_wiget.dart';
 import 'package:image_picker/image_picker.dart';
 import '../base/const.dart' as Constrants;
 
@@ -339,35 +340,83 @@ class _ProfilePage extends State<ProfilePage> {
                                   Expanded(
                                     child: Align(
                                       alignment: Alignment.bottomRight,
-                                      child: Container(
-                                        height: 70,
-                                        width: 200,
-                                        child: Align(
-                                            child: ElevatedButton(
-                                          onPressed: () {
-                                            _editSavePress();
-                                          },
-                                          child: Text(
-                                            "Lưu",
-                                            style: TextStyle(
-                                                fontSize: 25,
-                                                color: Colors.white),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Colors.transparent,
-                                              shape: new RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(30),
-                                                ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            height: 70,
+                                            width: 200,
+                                            child: Align(
+                                                child: ElevatedButton(
+                                              onPressed: () {
+                                                showModalChangePass();
+                                              },
+                                              child: Text(
+                                                "Đổi mật khẩu",
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    color: Colors.white),
                                               ),
-                                              minimumSize: Size(200, 70),
-                                              shadowColor: Colors.transparent),
-                                        )),
-                                        decoration: BoxDecoration(
-                                            color: Colors.deepOrange,
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(30),
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Colors.transparent,
+                                                  shape:
+                                                      new RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topRight:
+                                                          Radius.circular(30),
+                                                    ),
+                                                  ),
+                                                  minimumSize: Size(200, 70),
+                                                  shadowColor:
+                                                      Colors.transparent),
                                             )),
+                                            decoration: BoxDecoration(
+                                              color: Colors.deepOrange,
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(30),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 70,
+                                            width: 200,
+                                            child: Align(
+                                                child: ElevatedButton(
+                                              onPressed: () {
+                                                _editSavePress();
+                                              },
+                                              child: Text(
+                                                "Lưu",
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    color: Colors.white),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Colors.transparent,
+                                                  shape:
+                                                      new RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(30),
+                                                    ),
+                                                  ),
+                                                  minimumSize: Size(200, 70),
+                                                  shadowColor:
+                                                      Colors.transparent),
+                                            )),
+                                            decoration: BoxDecoration(
+                                              color: Colors.deepOrange,
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(30),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -404,7 +453,7 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
   Image getImageUser() {
-    if (URLImage != null && URLImage!='') {
+    if (URLImage != null && URLImage != '') {
       return Image.network(Constrants.URl + URLImage!,
           height: 150, width: 150, fit: BoxFit.cover);
     } else {
@@ -425,7 +474,30 @@ class _ProfilePage extends State<ProfilePage> {
       ;
     });
     UserService.UploadImage(widget.user.userId, image!).then((value) => {
-          if (value == true) {getInfoUser()}
+          if (value == true
+          ) {
+            getInfoUser()}
         });
+  }
+  void showModalChangePass(){
+    showModalBottomSheet<void>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                    backgroundColor: Colors.white,
+                    isDismissible: false,
+                    // enableDrag: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        padding: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        height: 350,
+                        child: ChangePass(widget.user),
+                      );
+                    },
+                  );
   }
 }

@@ -7,6 +7,7 @@ class User {
   final String phone;
   final String name;
   final bool status;
+  final String URLImage;
   
   const User(
       {required this.userId,
@@ -15,7 +16,8 @@ class User {
       required this.email,
       required this.phone,
       required this.status,
-      required this.name});
+      required this.name,
+      required this.URLImage});
 
   factory User.fromJson(Map<String, dynamic> json,String Username) {
     return User(
@@ -25,6 +27,7 @@ class User {
         email: json['Email'],
         phone: json['SDT'],
         name: json['TenHienThi'],
-        status: json['Status']
+        status: json['Status'],
+        URLImage: json['URLImage'],
     );
 }}

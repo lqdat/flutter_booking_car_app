@@ -1,13 +1,21 @@
 // ignore_for_file: must_be_immutable, unnecessary_new
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/car.dart';
 import 'package:flutter_application/res/DTO/user.dart';
 import 'package:flutter_application/res/base/base.dart';
 import 'package:flutter_application/res/service/carservice.dart';
 import 'package:flutter_application/res/service/historyservice.dart';
+import 'package:flutter_application/res/service/notificationservice.dart';
 import 'package:flutter_application/res/stream/car_steam.dart';
 import 'package:flutter_application/res/wiget_home/wigets/info_trip_wiget.dart';
+import '../../base/const.dart' as Contranst;
+import 'dart:ui' as ui;
+
+import '../../service/couponservice.dart';
+import '../../wiget_coupon/wiget_coupon.dart';
 
 class CarWiget extends StatefulWidget {
   String from_address;
@@ -22,6 +30,9 @@ class CarWiget extends StatefulWidget {
 }
 
 class _CarWigetState extends State<CarWiget> {
+  String? codeVoucher;
+  double? voucherPrice;
+  String? idVoucher;
   Base base = new Base();
   final _carStream = new CarStream();
   bool isLoading = false;
@@ -45,92 +56,161 @@ class _CarWigetState extends State<CarWiget> {
       stream: _carStream.stream,
       builder: (context, snapshot) {
         return Stack(
+          fit: StackFit.loose,
           children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(height: 137),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(6)),
-              ),
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return ElevatedButton(
-                    child: Container(
-                      constraints: BoxConstraints.expand(width: 120),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Color(0xff323643),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(2))),
-                            child: Text(
-                              listCar.elementAt(index).name.toString(),
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 10),
+            ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  constraints: BoxConstraints.expand(height: 137),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                  ),
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: ElevatedButton(
+                            child: Container(
+                              constraints: BoxConstraints.expand(width: 120),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff323643),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2))),
+                                    child: Text(
+                                      listCar.elementAt(index).name.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                    padding: EdgeInsets.all(2),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color(0xfff7f7f7),
+                                    ),
+                                    width: 64,
+                                    height: 64,
+                                    child: Center(
+                                      child: getImageCar(
+                                          listCar.elementAt(index).URLImage),
+                                    ),
+                                  ),
+                                  Text(
+                                    listCar.elementAt(index).price.toString() +
+                                        " VNĐ",
+                                    style: TextStyle(
+                                        color: _carStream.isSelected(index)
+                                            ? Colors.white
+                                            : Color(0xff606470),
+                                        fontSize: 12),
+                                  )
+                                ],
+                              ),
                             ),
-                            padding: EdgeInsets.all(2),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xfff7f7f7),
-                            ),
-                            width: 64,
-                            height: 64,
-                            child: Center(
-                              child: getImageCar(index),
-                            ),
-                          ),
-                          Text(
-                            listCar.elementAt(index).price.toString() + " VNĐ",
-                            style: TextStyle(
-                                color: _carStream.isSelected(index)
-                                    ? Colors.white
-                                    : Color(0xff606470),
-                                fontSize: 12),
-                          )
-                        ],
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            _carStream.isSelected(index)
-                                ? Color.fromARGB(136, 6, 54, 113)
-                                : Colors.white)),
-                    onPressed: () {
-                      _carStream.selectItem(index);
+                            style: ButtonStyle(
+                                // padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(2)),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        _carStream.isSelected(index)
+                                            ? Color.fromARGB(136, 6, 54, 113)
+                                            : Colors.white)),
+                            onPressed: () {
+                              _carStream.selectItem(index);
+                            },
+                          ));
                     },
-                  );
-                },
-                itemCount: listCar.length,
-                scrollDirection: Axis.horizontal,
+                    itemCount: listCar.length,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 106,
+              left: 10,
+              right: 10,
+              child: ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Mã giảm giá : ",
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                          ElevatedButton.icon(
+                            icon: Icon(
+                              Icons.discount,
+                              color: Colors.green,
+                              size: 30.0,
+                            ),
+                            label: Text(
+                              getTextVoucher(),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WidgetCoupon(
+                                          widget.user,
+                                          (Id, price, code) =>
+                                              _receiceData(Id, price, code))));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              padding: EdgeInsets.all(5),
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          )
+                        ]),
+                  ),
+                ),
               ),
             ),
             Positioned(
               bottom: 48,
-              right: 0,
-              left: 0,
+              right: 10,
+              left: 10,
               height: 50,
-              child: Container(
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "Tổng cộng (" "~" + _getDistanceInfo() + "): ",
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+              child: ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Tổng cộng (" "~" + _getDistanceInfo() + "): ",
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                        ),
+                        Text(
+                          _getTotal().toString() + " VNĐ",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        )
+                      ],
                     ),
-                    Text(
-                      _getTotal().toString() + " VNĐ",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    )
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -138,50 +218,46 @@ class _CarWigetState extends State<CarWiget> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  child: isLoading
-                      ? CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : Text(
-                          "Chọn",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                  onPressed: widget.distance == 0
-                      ? null
-                      : () {
-                          _postOrder();
-                        },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        widget.distance == 0 ? Colors.grey : Color(0xff3277D8)),
+              child: ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      child: isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(
+                              "Đặt xe",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            ),
+                      onPressed: widget.distance == 0
+                          ? null
+                          : () {
+                              _postOrder();
+                            },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            widget.distance == 0
+                                ? Colors.transparent
+                                : Color(0xff3277D8)),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         );
       },
     );
   }
 
-  Image? getImageCar(int index) {
-    String id = listCar.elementAt(index).id.toString();
-    switch (id) {
-      case "1":
-        return Image.asset("assets/images/ic_car_blue.png");
-      case "2":
-        return Image.asset("assets/images/ic_car_red.png");
-      case "3":
-        return Image.asset("assets/images/ic_car_green.png");
-      case "4":
-        return Image.asset("assets/images/ic_bus.png");
-      default:
-        return null;
-    }
+  Image? getImageCar(String URLImage) {
+    return Image.network(Contranst.URl + URLImage);
   }
 
   void closeCar() {
@@ -194,10 +270,36 @@ class _CarWigetState extends State<CarWiget> {
   }
 
   double _getTotal() {
-    double distanceInKM = widget.distance;
-    return (distanceInKM.roundToDouble() *
-        _carStream.getCurrentCar(listCar).price /
-        1000);
+    double distanceInKM = widget.distance / 1000;
+    if (distanceInKM == 0) {
+      return 0;
+    }
+    if (voucherPrice != null) {
+      return (distanceInKM.roundToDouble() *
+              _carStream.getCurrentCar(listCar).price) -
+          voucherPrice!;
+    } else {
+      return (distanceInKM.roundToDouble() *
+          _carStream.getCurrentCar(listCar).price);
+    }
+  }
+
+  void _receiceData(String Id, int price, String code) {
+    setState(() {
+      idVoucher = Id;
+      codeVoucher = code;
+      voucherPrice = double.parse(price.toString());
+    });
+  }
+
+  String getTextVoucher() {
+    if (codeVoucher != null) {
+      return 'Mã ' +
+          codeVoucher.toString() +
+          ' giảm ' +
+          voucherPrice.toString();
+    }
+    return 'Chọn mã giảm giá...';
   }
 
   _postOrder() async {
@@ -215,8 +317,22 @@ class _CarWigetState extends State<CarWiget> {
             widget.distance.toInt(),
             "",
             _carStream.getCurrentCar(listCar).id,
-            false)
+            false,
+            idVoucher??null)
         .then((value) => {
+              NotificationService.postNotify(
+                  widget.user,
+                  "Đặt xe thành công",
+                  "Đặt xe từ " +
+                      widget.from_address +
+                      "đến" +
+                      widget.to_address +
+                      " số tiền" +
+                      _getTotal().toString()),
+              if (idVoucher != null)
+                {
+                  CouponService.updateCoupon(idVoucher!),
+                },
               if (value != null)
                 {
                   setState(() {
@@ -238,10 +354,7 @@ class _CarWigetState extends State<CarWiget> {
                           borderRadius: BorderRadius.all(Radius.circular(30)),
                         ),
                         height: 500,
-                        child: InfoTrip(
-                          value.id,
-                          widget.user,
-                        ),
+                        child: InfoTrip(value.id, widget.user, true),
                       );
                     },
                   ),

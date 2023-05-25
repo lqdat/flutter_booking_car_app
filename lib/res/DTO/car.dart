@@ -1,10 +1,19 @@
 class Car {
   final String name;
-  final int price;
+  final double price;
   final String id;
-  const Car({required this.name, required this.price, required this.id});
+  final String URLImage;
+  const Car(
+      {required this.name,
+      required this.price,
+      required this.id,
+      required this.URLImage});
 
   factory Car.fromJson(Map<String, dynamic> json) {
-    return Car(name: json['name'], price: json['price'], id: json['id']);
+    return Car(
+        name: json['Name'],
+        price: double.parse(json['GiaTienTrenKm']),
+        id: json['Id'],
+        URLImage: json['URLImage']);
   }
 }

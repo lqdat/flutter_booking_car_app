@@ -8,10 +8,17 @@ import 'package:flutter_application/res/component/emty_wiget.dart';
 import 'package:flutter_application/res/component/loading_wiget.dart';
 import 'package:flutter_application/res/service/historyservice.dart';
 import 'package:flutter_application/res/stream/history_bloc.dart';
+import 'package:flutter_application/res/wiget_home/home_page.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:tiengviet/tiengviet.dart';
+import 'package:skeleton_loader/skeleton_loader.dart';
+import '../base/const.dart' as Constrants;
+import '../DTO/car.dart';
+import '../component/skeleton_wiget.dart';
+import '../service/carservice.dart';
+import '../wiget_home/wigets/info_trip_wiget.dart';
 
 class HistoryPage extends StatefulWidget {
   User user;
@@ -24,9 +31,17 @@ class _HistoryPageState extends State<HistoryPage> {
   final _historyStream = new HistoryStream();
   bool isLoading = false;
   List<History> listHistory = [];
+  List<Car> listCar = [];
+
   void getlistHistory() async {
     setState(() {
       isLoading = true;
+    });
+    await CarService.getCar().then((value) {
+      setState(() {
+        listCar = value;
+      });
+      ;
     });
     await HistoryService.getHistory(widget.user).then((value) => setState(() {
           value.sort((a, b) {
@@ -57,6 +72,13 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white70,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back,
+                  color: Color.fromARGB(136, 6, 54, 113), size: 40),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(widget.user)))),
           iconTheme:
               IconThemeData(color: Color.fromARGB(136, 6, 54, 113), size: 40),
           elevation: 0,
@@ -72,7 +94,7 @@ class _HistoryPageState extends State<HistoryPage> {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 50, 16, 0),
               child: isLoading
-                  ? LoaderTransparent(Colors.black)
+                  ? SkeletonWiget()
                   : Container(
                       child: listHistory.length > 0
                           ? StreamBuilder(
@@ -80,277 +102,327 @@ class _HistoryPageState extends State<HistoryPage> {
                               builder: (context, snapshot) {
                                 return new ListView.builder(
                                   itemBuilder: (context, index) {
-                                    return SizedBox(
-                                      height: 200.0,
-                                      child: Card(
-                                        shape: new RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(30)),
+                                    return Slidable(
+                                        startActionPane: ActionPane(
+                                          // A motion is a widget used to control how the pane animates.
+                                          motion: DrawerMotion(),
+                                          // All actions are defined in the children parameter.
+                                          children: [
+                                            // A SlidableAction can have an icon and/or a label.
+                                            SlidableAction(
+                                              onPressed: (_) {
+                                                deletebyId(listHistory
+                                                    .elementAt(index)
+                                                    .id);
+                                              },
+                                              backgroundColor:
+                                                  Color(0xFFFE4A49),
+                                              foregroundColor: Colors.white,
+                                              icon: Icons.delete,
+                                              label: 'Delete',
+                                            ),
+                                            SlidableAction(
+                                              onPressed: (_) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            (InfoTrip(
+                                                                listHistory
+                                                                    .elementAt(
+                                                                        index)
+                                                                    .id,
+                                                                widget.user,
+                                                                false))));
+                                              },
+                                              backgroundColor:
+                                                  Color(0xFF21B7CA),
+                                              foregroundColor: Colors.white,
+                                              icon: Icons.edit,
+                                              label: 'Chỉnh sửa',
+                                            ),
+                                          ],
                                         ),
-                                        color: Colors.transparent,
-                                        elevation: 5,
-                                        child: ElevatedButton(
-                                          onPressed: () {},
-                                          child: Column(children: <Widget>[
-                                            Row(children: [
-                                              Container(
-                                                height: 90,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 8.0,
-                                                ),
-                                                child: new Stack(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      margin:
-                                                          new EdgeInsets.only(
-                                                              left: 0.0),
-                                                      child: new Container(
-                                                        height: 200,
-                                                        width: 300,
-                                                        margin: const EdgeInsets
-                                                                .only(
-                                                            top: 0.0,
-                                                            left: 72.0),
-                                                        child: new Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: <Widget>[
-                                                            new Column(
+                                        child: SizedBox(
+                                          height: 200.0,
+                                          child: Card(
+                                            shape: new RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(30)),
+                                            ),
+                                            color: Colors.transparent,
+                                            elevation: 5,
+                                            child: ElevatedButton(
+                                              onPressed: () {},
+                                              child: Column(children: <Widget>[
+                                                Row(children: [
+                                                  Container(
+                                                    height: 90,
+                                                    margin: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 8.0,
+                                                    ),
+                                                    child: new Stack(
+                                                      children: <Widget>[
+                                                        Container(
+                                                          margin: new EdgeInsets
+                                                              .only(left: 0.0),
+                                                          child: new Container(
+                                                            height: 200,
+                                                            width: 300,
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 0.0,
+                                                                    left: 72.0),
+                                                            child: new Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: <
                                                                   Widget>[
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets
+                                                                new Column(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Padding(
+                                                                      padding: EdgeInsets
                                                                           .only(
                                                                               top: 8),
-                                                                  child:
-                                                                      new Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding:
-                                                                            EdgeInsets.only(bottom: 2),
-                                                                        child:
-                                                                            new Row(
-                                                                          children: [
-                                                                            new Icon(Icons.location_on,
-                                                                                size: 20.0,
-                                                                                color: Colors.red),
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(left: 5),
-                                                                              child: new Text(listHistory.elementAt(index).from_address.toString(), style: TextStyle(fontSize: 16)),
+                                                                      child:
+                                                                          new Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(bottom: 2),
+                                                                            child:
+                                                                                new Row(
+                                                                              children: [
+                                                                                new Icon(Icons.location_on, size: 20.0, color: Colors.red),
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(left: 5),
+                                                                                  child: new Text(listHistory.elementAt(index).from_address.toString(), style: TextStyle(fontSize: 16)),
+                                                                                ),
+                                                                              ],
                                                                             ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Align(
-                                                                        alignment: AlignmentDirectional(
-                                                                            -0.94,
-                                                                            1),
-                                                                        child: Dash(
-                                                                            direction: Axis
-                                                                                .vertical,
-                                                                            length:
-                                                                                19,
-                                                                            dashLength:
-                                                                                2,
-                                                                            dashColor:
-                                                                                Colors.white),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: EdgeInsets.only(
-                                                                            bottom:
-                                                                                10,
-                                                                            top:
-                                                                                2),
-                                                                        child:
-                                                                            new Row(
-                                                                          children: [
-                                                                            new Icon(Icons.location_on,
-                                                                                size: 20.0,
-                                                                                color: Colors.green),
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(left: 5),
-                                                                              child: new Text(listHistory.elementAt(index).to_address.toString(), style: TextStyle(fontSize: 16)),
+                                                                          ),
+                                                                          Align(
+                                                                            alignment:
+                                                                                AlignmentDirectional(-0.94, 1),
+                                                                            child: Dash(
+                                                                                direction: Axis.vertical,
+                                                                                length: 19,
+                                                                                dashLength: 2,
+                                                                                dashColor: Colors.white),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(bottom: 10, top: 2),
+                                                                            child:
+                                                                                new Row(
+                                                                              children: [
+                                                                                new Icon(Icons.location_on, size: 20.0, color: Colors.green),
+                                                                                Padding(
+                                                                                  padding: EdgeInsets.only(left: 5),
+                                                                                  child: new Text(listHistory.elementAt(index).to_address.toString(), style: TextStyle(fontSize: 16)),
+                                                                                ),
+                                                                              ],
                                                                             ),
-                                                                          ],
-                                                                        ),
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                    ],
-                                                                  ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          AlignmentDirectional
-                                                              .topCenter,
-                                                      child: Container(
-                                                        margin: const EdgeInsets
-                                                            .only(
-                                                          right: 50.0,
-                                                          top: 16,
-                                                        ),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            color: Color(
-                                                                0xfff7f7f7),
-                                                          ),
-                                                          width: 64,
-                                                          height: 64,
-                                                          child: Center(
-                                                            child: getImageCar(
-                                                                index),
                                                           ),
                                                         ),
-                                                      ),
+                                                        Align(
+                                                          alignment:
+                                                              AlignmentDirectional
+                                                                  .topCenter,
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              right: 50.0,
+                                                              top: 16,
+                                                            ),
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color: Color(
+                                                                    0xfff7f7f7),
+                                                              ),
+                                                              width: 64,
+                                                              height: 64,
+                                                              child: Center(
+                                                                child: getImageCar(
+                                                                    listHistory
+                                                                        .elementAt(
+                                                                            index)
+                                                                        .carId),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ]),
-                                            Align(
-                                              alignment: AlignmentDirectional
-                                                  .bottomStart,
-                                              child: new Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  new Row(
+                                                  ),
+                                                ]),
+                                                Align(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .bottomStart,
+                                                  child: new Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      new Icon(Icons.date_range,
-                                                          size: 20.0,
-                                                          color: Colors.white),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 5),
-                                                        child: new Text(
-                                                            DateFormat(
-                                                                    'yyyy-MM-dd – kk:mm')
-                                                                .format(DateTime
-                                                                    .parse(listHistory
+                                                      new Row(
+                                                        children: [
+                                                          new Icon(
+                                                              Icons.date_range,
+                                                              size: 20.0,
+                                                              color:
+                                                                  Colors.white),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 5),
+                                                            child: new Text(
+                                                                DateFormat(
+                                                                        'yyyy-MM-dd – kk:mm')
+                                                                    .format(DateTime.parse(listHistory
                                                                         .elementAt(
                                                                             index)
                                                                         .date
                                                                         .toString())),
-                                                            style: TextStyle(
-                                                                fontSize: 16)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  new Row(
-                                                    children: [
-                                                      new Icon(
-                                                          Icons.price_change,
-                                                          size: 20.0,
-                                                          color: Colors.white),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 5),
-                                                        child: new Text(
-                                                            listHistory
-                                                                    .elementAt(
-                                                                        index)
-                                                                    .price
-                                                                    .toString() +
-                                                                " VNĐ",
-                                                            style: TextStyle(
-                                                                fontSize: 16)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 8, bottom: 8),
-                                              child: Align(
-                                                alignment: AlignmentDirectional
-                                                    .centerStart,
-                                                child: RatingBar.builder(
-                                                  ignoreGestures: true,
-                                                  initialRating: listHistory
-                                                      .elementAt(index)
-                                                      .rating
-                                                      .toDouble(),
-                                                  itemSize: 25,
-                                                  minRating: 0,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: true,
-                                                  itemCount: 5,
-                                                  // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                  itemBuilder: (context, _) =>
-                                                      Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  onRatingUpdate: (rating) {},
-                                                ),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: AlignmentDirectional
-                                                  .bottomEnd,
-                                              child: listHistory
-                                                          .elementAt(index)
-                                                          .status ==
-                                                      false
-                                                  ? Container(
-                                                      width: 150.0,
-                                                      height: 24.0,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  20),
-                                                        ),
-                                                        color: Colors.red,
-                                                      ),
-                                                      child: Center(
-                                                        child: Text(
-                                                          'Chưa đánh giá',
-                                                          style: TextStyle(
-                                                            fontFamily: 'Arial',
-                                                            fontSize: 18,
-                                                            color: Colors.white,
-                                                            height: 1,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        16)),
                                                           ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ),
+                                                        ],
                                                       ),
-                                                    )
-                                                  : null,
-                                            )
-                                          ]),
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Color.fromARGB(
-                                                  136, 6, 54, 113),
-                                              shape: new RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(30),
+                                                      new Row(
+                                                        children: [
+                                                          new Icon(
+                                                              Icons
+                                                                  .price_change,
+                                                              size: 20.0,
+                                                              color:
+                                                                  Colors.white),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 5),
+                                                            child: new Text(
+                                                                listHistory
+                                                                        .elementAt(
+                                                                            index)
+                                                                        .price
+                                                                        .toString() +
+                                                                    " VNĐ",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        16)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              shadowColor: Colors.transparent),
-                                        ),
-                                      ),
-                                    );
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 8, bottom: 8),
+                                                  child: Align(
+                                                    alignment:
+                                                        AlignmentDirectional
+                                                            .centerStart,
+                                                    child: RatingBar.builder(
+                                                      ignoreGestures: true,
+                                                      initialRating: listHistory
+                                                          .elementAt(index)
+                                                          .rating
+                                                          .toDouble(),
+                                                      itemSize: 25,
+                                                      minRating: 0,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      allowHalfRating: true,
+                                                      itemCount: 5,
+                                                      // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                      itemBuilder:
+                                                          (context, _) => Icon(
+                                                        Icons.star,
+                                                        color: Colors.amber,
+                                                      ),
+                                                      onRatingUpdate:
+                                                          (rating) {},
+                                                    ),
+                                                  ),
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .bottomEnd,
+                                                  child: listHistory
+                                                              .elementAt(index)
+                                                              .status ==
+                                                          0
+                                                      ? Container(
+                                                          width: 150.0,
+                                                          height: 24.0,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius
+                                                                  .circular(20),
+                                                            ),
+                                                            color: Colors.red,
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              'Chưa đánh giá',
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    'Arial',
+                                                                fontSize: 18,
+                                                                color: Colors
+                                                                    .white,
+                                                                height: 1,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : null,
+                                                )
+                                              ]),
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Color.fromARGB(
+                                                      136, 6, 54, 113),
+                                                  shape:
+                                                      new RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(30),
+                                                    ),
+                                                  ),
+                                                  shadowColor:
+                                                      Colors.transparent),
+                                            ),
+                                          ),
+                                        ));
                                   },
                                   itemCount: listHistory.length,
                                   scrollDirection: Axis.vertical,
@@ -418,19 +490,18 @@ class _HistoryPageState extends State<HistoryPage> {
     getlistHistory();
   }
 
-  Image? getImageCar(int index) {
-    String id = listHistory.elementAt(index).carId.toString();
-    switch (id) {
-      case "1":
-        return Image.asset("assets/images/ic_car_blue.png");
-      case "2":
-        return Image.asset("assets/images/ic_car_red.png");
-      case "3":
-        return Image.asset("assets/images/ic_car_green.png");
-      case "4":
-        return Image.asset("assets/images/ic_bus.png");
-      default:
-        return null;
-    }
+  Future<void> deletebyId(String Id) async {
+    setState(() {
+      isLoading = true;
+    });
+    await HistoryService.deleteHistorybyId(Id);
+
+    getlistHistory();
+  }
+
+  Image? getImageCar(String Id) {
+    var URL = listCar.where((element) => element.id == Id).single.URLImage;
+
+    return Image.network(Constrants.URl + URL);
   }
 }

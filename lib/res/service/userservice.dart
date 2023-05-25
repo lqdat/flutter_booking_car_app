@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_application/main.dart';
 import 'package:flutter_application/res/DTO/user.dart';
 import 'package:http/http.dart' as http;
 import '../base/const.dart' as Constants;
+
 class UserService {
-  static Future<bool> putUser( String name, String email,
-      String phone,String Id) async {
-    String url = "http://enderg14-001-site1.gtempurl.com/odata/TaiKhoans(guid'${Id}')";
+  static Future<bool> putUser(
+      String name, String email, String phone, String Id) async {
+    String url =
+        "http://enderg14-001-site1.gtempurl.com/odata/TaiKhoans(guid'${Id}')";
 
     var res = await http.patch(
       Uri.parse(url),
@@ -28,8 +31,45 @@ class UserService {
     }
   }
 
+  static Future<bool> UploadImage(String id, File file) async {
+    Map<String, String> headers = {
+      "Accept": "application/json",
+    
+    }; // ignore this headers if there is no authentication
+
+    // string to uri
+    var uri = Uri.parse(Constants.URl + "QuanLyTaiKhoan/UploadAnh");
+
+    // create multipart request
+    var request = new http.MultipartRequest("POST", uri);
+
+    // multipart that takes file
+
+    // add file to multipart
+    request.files.add(await http.MultipartFile.fromPath('picture', file.path));
+    //add headers
+    request.headers.addAll(headers);
+
+    //adding params
+    request.fields['Id'] = id;
+
+    // send
+    var response = await request.send();
+
+    print(response.statusCode);
+    if (response.statusCode == 204 || response.statusCode == 200) {
+      // listen for response
+      response.stream.transform(utf8.decoder).listen((value) {
+        print(value);
+        
+      });
+      return true;
+    }
+    return false;
+  }
+
   static Future<User?> getInfobyId(String id) async {
-    String url = Constants.URl+"/odata/TaiKhoans(guid'${id}')";
+    String url = Constants.URl + "odata/TaiKhoans(guid'${id}')";
     var res = await http.get(
       Uri.parse(url),
       headers: {
@@ -38,7 +78,7 @@ class UserService {
     );
     if (res.statusCode == 204 || res.statusCode == 200) {
       dynamic rs = json.decode(res.body);
-       User user = await User.fromJson(rs,'');
+      User user = await User.fromJson(rs, '');
       return user;
     } else {
       return null;

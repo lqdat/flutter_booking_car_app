@@ -1,11 +1,15 @@
 // ignore_for_file: unused_field, unnecessary_new, must_be_immutable
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/user.dart';
 import 'package:flutter_application/res/base/base.dart';
 import 'package:flutter_application/res/component/loading_wiget.dart';
 import 'package:flutter_application/res/service/userservice.dart';
 import 'package:flutter_application/res/stream/profile_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import '../base/const.dart' as Constrants;
 
 class ProfilePage extends StatefulWidget {
   User user;
@@ -15,6 +19,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePage extends State<ProfilePage> {
+  String? URLImage = null;
+  File? image;
   Base base = new Base();
   ProfileBloc profile_bloc = new ProfileBloc();
   TextEditingController _nameController = new TextEditingController();
@@ -40,6 +46,7 @@ class _ProfilePage extends State<ProfilePage> {
           _phoneController = new TextEditingController(text: value?.phone),
           _emailController = new TextEditingController(text: value?.email),
           setState((() {
+            URLImage = value?.URLImage ?? null;
             password = "";
             isLoading = false;
           }))
@@ -80,14 +87,7 @@ class _ProfilePage extends State<ProfilePage> {
                                 CircleAvatar(
                                   backgroundColor: Colors.white,
                                   radius: 70,
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      'assets/images/user.png',
-                                      height: 150,
-                                      width: 150,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                                  child: ClipOval(child: getImageUser()),
                                 ),
                                 Positioned(
                                   bottom: 1,
@@ -95,9 +95,13 @@ class _ProfilePage extends State<ProfilePage> {
                                   child: Container(
                                     height: 40,
                                     width: 40,
-                                    child: Icon(
-                                      Icons.add_a_photo,
-                                      color: Colors.white,
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.add_a_photo,
+                                        color: Colors.white,
+                                        size: 25.0,
+                                      ),
+                                      onPressed: (() => chooseImgae()),
                                     ),
                                     decoration: BoxDecoration(
                                         color: Colors.deepOrange,
@@ -397,5 +401,31 @@ class _ProfilePage extends State<ProfilePage> {
     } else {
       base.showToastError(context, 'Không thể cập nhật thông tin');
     }
+  }
+
+  Image getImageUser() {
+    if (URLImage != null && URLImage!='') {
+      return Image.network(Constrants.URl + URLImage!,
+          height: 150, width: 150, fit: BoxFit.cover);
+    } else {
+      return Image.asset(
+        'assets/images/user.png',
+        height: 150,
+        width: 150,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
+  chooseImgae() async {
+    final ImagePicker _picker = ImagePicker();
+    final img = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = File(img!.path);
+      ;
+    });
+    UserService.UploadImage(widget.user.userId, image!).then((value) => {
+          if (value == true) {getInfoUser()}
+        });
   }
 }

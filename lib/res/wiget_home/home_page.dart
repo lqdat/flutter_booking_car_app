@@ -11,6 +11,8 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../wiget_notification/wiget_notification.dart';
+
 // ignore: must_be_immutable
 class HomePage extends StatefulWidget {
   late User user;
@@ -96,7 +98,17 @@ class _HomePage extends State<HomePage> {
                                             MaterialStateProperty.all<Color>(
                                                 Colors.transparent))),
                                 actions: <Widget>[
-                                  Image.asset('assets/images/ic_bell.png')
+                                  IconButton(
+                                      onPressed: (() => {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        NotificationPage(
+                                                            widget.user)))
+                                          }),
+                                      icon: Image.asset(
+                                          'assets/images/ic_bell.png'))
                                 ],
                               ),
                               Padding(
@@ -116,7 +128,7 @@ class _HomePage extends State<HomePage> {
                           left: 20,
                           right: 20,
                           bottom: 20,
-                          height: 240,
+                          height: 300,
                           child: CarWiget(_tripDistance, fr_name, t_name,
                               widget.user, () => closeAndRemoveAll()),
                         )
@@ -149,7 +161,6 @@ class _HomePage extends State<HomePage> {
     _mapboxPlace = data;
     _isFromAddress = _isFrAddress;
     if (_isFrAddress) {
-      print("aaaaaaaa");
       setState(() {
         fr_name = data.text.toString();
       });

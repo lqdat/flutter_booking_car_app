@@ -2,13 +2,20 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_application/res/DTO/history.dart';
 import 'package:flutter_application/res/DTO/user.dart';
+import 'package:flutter_guid/flutter_guid.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:tiengviet/tiengviet.dart';
+import 'package:uuid/uuid.dart';
+import '../base/const.dart' as Contranst;
 
 class HistoryService {
   static Future<List<History>> getHistory(User user) async {
-    String url =
-        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history";
+    String url = Contranst.URl +
+        "odata/BookHistories?\$filter=TaiKhoan_Id eq guid\'" +
+        user.userId +
+        "\'";
+
     var res = await http.get(
       Uri.parse(url),
       headers: {
@@ -17,7 +24,8 @@ class HistoryService {
     );
 
     if (res.statusCode == 200) {
-      List<dynamic> rs = json.decode(res.body).cast<Map<String, dynamic>>();
+      List<dynamic> rs =
+          Map<String, dynamic>.from(json.decode(res.body))['value'];
       List<History> historyList =
           rs.map<History>((json) => History.fromJson(json)).toList();
       return historyList;
@@ -31,28 +39,28 @@ class HistoryService {
       String form_add,
       String to_add,
       DateTime datetime,
-      double cast,
+      double? cast,
       int rating,
       int distance,
       String text,
       String carId,
-      bool status) async {
-    String url =
-        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history";
+      bool status,
+      String? idVoucher) async {
+    String url = Contranst.URl + "odata/BookHistories";
     var res = await http.post(
       Uri.parse(url),
       body: jsonEncode({
-        "createdAt": DateTime.now().toString(),
-        "from_address": TiengViet.parse(form_add),
-        "to_address": TiengViet.parse(to_add),
-        "price": cast,
-        "date": datetime.toString(),
-        "distance": distance,
-        "rating": rating,
-        "text": text,
-        "id": DateTime.now().millisecond.toString(),
-        "carId": carId.toString(),
-        "status": status,
+        "DiaDiemDi": TiengViet.parse(form_add),
+        "DiaDiemDen": TiengViet.parse(to_add),
+        "GiaTien": cast.toString(),
+        "NgayDat": DateFormat('yyyy-MM-ddTHH:mm:ss').format(datetime),
+        "KhoangCach": distance,
+        "Sao":0,
+        "DanhGia": "",
+        "Xe_Id": carId,
+        "TaiKhoan_Id": user.userId,
+        "TrangThai": status?1:0,
+        "GiamGia_Id":idVoucher??null,
       }),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
@@ -60,7 +68,8 @@ class HistoryService {
     );
 
     if (res.statusCode == 201) {
-      dynamic rs = json.decode(res.body);
+      var rs = Map<String,dynamic>.from(json.decode(res.body));
+
       History history = History.fromJson(rs);
       return history;
     } else {
@@ -69,39 +78,25 @@ class HistoryService {
   }
 
   static Future<bool> putHistory(
-      User user,
-      String form_add,
-      String to_add,
-      DateTime datetime,
-      double cast,
       int rating,
-      int distance,
       String text,
-      int carId,
       String historyId,
       bool status) async {
     String url =
-        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history/${historyId}";
-    var res = await http.put(
+        Contranst.URl+"odata/BookHistories(guid'" + historyId+ "')"  ;
+    var res = await http.patch(
       Uri.parse(url),
       body: jsonEncode({
-        "createdAt": DateTime.now().toString(),
-        "from_address": TiengViet.parse(form_add),
-        "to_address": TiengViet.parse(to_add),
-        "price": cast,
-        "date": datetime.toString(),
-        "distance": distance,
-        "rating": rating,
-        "text": text,
-        "id": DateTime.now().millisecond.toString(),
-        "status": status,
+        "Sao": rating,
+        "DanhGia": text.toString(),
+        "TrangThai": status?1:0,
       }),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
       },
     );
 
-    if (res.statusCode == 201 || res.statusCode == 200) {
+    if (res.statusCode == 200 || res.statusCode == 204) {
       return true;
     } else {
       return false;
@@ -113,7 +108,7 @@ class HistoryService {
     String param,
   ) async {
     String url =
-        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history/${param}";
+        Contranst.URl+"odata/BookHistories(guid'" + param+ "')"  ;;
     var res = await http.delete(
       Uri.parse(url),
       headers: {
@@ -121,7 +116,26 @@ class HistoryService {
       },
     );
 
-    if (res.statusCode == 201 || res.statusCode == 200) {
+    if (res.statusCode == 201 || res.statusCode == 204) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> deleteHistorybyId(
+    String Id,
+  ) async {
+    String url =
+        Contranst.URl+"odata/BookHistories(guid'" + Id+ "')"  ;;
+    var res = await http.delete(
+      Uri.parse(url),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
+
+    if (res.statusCode == 201 || res.statusCode == 204) {
       return true;
     } else {
       return false;
@@ -130,7 +144,11 @@ class HistoryService {
 
   static Future<History?> getHistorybyId(User user, String Id) async {
     String url =
-        "https://627b30e4b54fe6ee00839593.mockapi.io/user/${user.userId}/history/${Id}";
+       Contranst.URl+"odata/BookHistories?\$filter=Id eq guid\'" +
+        Id +
+        "\'" +
+        '&\$expand=DM_Xe';
+
     var res = await http.get(
       Uri.parse(url),
       headers: {
@@ -139,7 +157,7 @@ class HistoryService {
     );
 
     if (res.statusCode == 200) {
-      dynamic rs = json.decode(res.body);
+      var rs = Map<String,dynamic>.from( json.decode(res.body))['value'][0];
       History historyList = History.fromJson(rs);
       return historyList;
     } else {

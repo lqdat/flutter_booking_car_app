@@ -5,6 +5,7 @@ import 'package:flutter_application/res/DTO/user.dart';
 import 'package:flutter_application/res/wiget_coupon/wiget_coupon.dart';
 import 'package:flutter_application/res/wiget_history/wiget_history.dart';
 import 'package:flutter_application/res/wiget_login/login_page.dart';
+import 'package:flutter_application/res/wiget_notification/wiget_notification.dart';
 import 'package:flutter_application/res/wiget_profile/wiget_profile.dart';
 
 import '../../wiget_hub/hub.dart';
@@ -68,7 +69,7 @@ class _MenuWiget extends State<MenuWiget> {
              Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => SignalR()));
+                    builder: (context) => NotificationPage(widget.user)));
           
           },
           child: ListTile(
@@ -85,7 +86,7 @@ class _MenuWiget extends State<MenuWiget> {
         ElevatedButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => WidgetCoupon(widget.user)));
+                MaterialPageRoute(builder: (context) => WidgetCoupon(widget.user,((p0, p1, p2) => {}))));
           },
           child: ListTile(
             leading: Image.asset("assets/images/ic_discount.png"),

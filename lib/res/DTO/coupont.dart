@@ -20,7 +20,7 @@ class Coupon {
       prepayment: json['Prepayment'],
       name: json['Name'],
       Code: json['Code'],
-      expirationDate: json['expretionDate'].toString(),
+      expirationDate: json['ExpretionDate'],
     );
   }
 }

@@ -57,6 +57,11 @@ dependencies:
   firebase_core: ^0.4.0
   empty_widget: ^0.0.5
   coupon_uikit: ^0.0.1
+  uuid: ^3.0.7
+  flutter_guid: ^0.3.1
+  flutter_slidable: ^2.0.0
+  skeleton_loader: ^2.0.0+4
+  image_picker: 0.8.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -135,6 +140,10 @@ flutter:
     - assets/images/background.png
     - assets/images/ic_from.png
     - assets/images/ic_car_blue.png
+    - assets/images/ic_loading.png
+    - assets/images/search.png
+    - assets/images/sort.png
+    - assets/images/checked.png
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

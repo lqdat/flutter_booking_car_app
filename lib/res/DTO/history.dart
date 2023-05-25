@@ -4,15 +4,16 @@ class History {
   final String userId;
   final String id;
   late final String carId;
-  final int price;
+  final String price;
   final String date;
   final String from_address;
   final String to_address;
   final String car_name;
-  final int rating;
-  final int distance;
+  final double rating;
+  final double distance;
   final String text;
-  final bool status;
+  final int status;
+  final String voucherId;
 
   History({
     required this.distance,
@@ -27,22 +28,24 @@ class History {
     required this.car_name,
     required this.text,
     required this.status,
+    required this.voucherId
   });
 
   factory History.fromJson(Map<String, dynamic> json) {
     return History(
-      distance: json['distance'],
-      text: json['text'],
-      rating: json['rating'],
-      userId: json['userId'],
-      id: json['id'],
-      carId: json['carId'],
-      price: json['price'],
-      date: json['date'],
-      from_address: TiengViet.parse(json['from_address']),
-      car_name: json['car_name'],
-      to_address: TiengViet.parse(json['to_address']),
-      status: json['status'],
+      distance: json['KhoangCach'],
+      text: json['DanhGia'],
+      rating: json['Sao']!=null? json['Sao']:0,
+      userId: json['TaiKhoan_Id'],
+      id: json['Id'],
+      carId: json['Xe_Id'],
+      price: json['GiaTien'],
+      date: json['NgayDat'],
+      from_address: TiengViet.parse(json['DiaDiemDen']),
+      car_name: json['DM_Xe']!=null ? TiengViet.parse(json['DM_Xe']['Name']) :"",
+      to_address: TiengViet.parse(json['DiaDiemDi']),
+      status: json['TrangThai'],
+      voucherId: json['GiamGia_Id']
     );
   }
 }

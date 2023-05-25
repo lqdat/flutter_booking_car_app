@@ -70,8 +70,7 @@ class _WidgetCouponState extends State<WidgetCoupon> {
               padding: const EdgeInsets.fromLTRB(16, 50, 16, 0),
               child: Column(
                 children: <Widget>[
-                 SearchInput(),
-                  
+                  SearchInput(widget.user, () => getlistCoupon()),
                   Expanded(
                     child: listCoupon.length > 0
                         ? StreamBuilder(

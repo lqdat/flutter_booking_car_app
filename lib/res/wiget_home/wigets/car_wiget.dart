@@ -271,16 +271,22 @@ class _CarWigetState extends State<CarWiget> {
 
   double _getTotal() {
     double distanceInKM = widget.distance / 1000;
+    double rs = 0;
     if (distanceInKM == 0) {
-      return 0;
+      return rs;
     }
     if (voucherPrice != null) {
-      return (distanceInKM.roundToDouble() *
+      rs = (distanceInKM.roundToDouble() *
               _carStream.getCurrentCar(listCar).price) -
           voucherPrice!;
+      if (rs < 0) {
+        return 0;
+      }
+      return rs;
     } else {
-      return (distanceInKM.roundToDouble() *
+      rs = (distanceInKM.roundToDouble() *
           _carStream.getCurrentCar(listCar).price);
+      return rs;
     }
   }
 
@@ -318,16 +324,16 @@ class _CarWigetState extends State<CarWiget> {
             "",
             _carStream.getCurrentCar(listCar).id,
             false,
-            idVoucher??null)
+            idVoucher ?? null)
         .then((value) => {
               NotificationService.postNotify(
                   widget.user,
                   "Đặt xe thành công",
                   "Đặt xe từ " +
                       widget.from_address +
-                      "đến" +
+                      " đến " +
                       widget.to_address +
-                      " số tiền" +
+                      " số tiền " +
                       _getTotal().toString()),
               if (idVoucher != null)
                 {

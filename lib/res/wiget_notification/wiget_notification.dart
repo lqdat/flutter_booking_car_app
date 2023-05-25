@@ -137,12 +137,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                             child: ElevatedButton(
                                               onPressed: () {},
                                               child: ListTile(
-                                                title: Text(DateFormat(
-                                                        'yyyy-MM-dd – kk:mm')
-                                                    .format(DateTime.parse(
-                                                        listNoti
-                                                            .elementAt(index)
-                                                            .date))),
+                                                title: Text(
+                                                    DateFormat(
+                                                            'yyyy-MM-dd – kk:mm')
+                                                        .format(DateTime.parse(
+                                                            listNoti
+                                                                .elementAt(
+                                                                    index)
+                                                                .date))),
                                                 subtitle: Text(listNoti
                                                     .elementAt(index)
                                                     .content),
@@ -238,9 +240,9 @@ class _NotificationPageState extends State<NotificationPage> {
     setState(() {
       isLoading = true;
     });
-    for (int i = 0; i < listNoti.length; i++) {
-      await HistoryService.deleteHistory(widget.user, listNoti[i].id);
-    }
+    // for (int i = 0; i < listNoti.length; i++) {
+    //   await HistoryService.deleteHistory(widget.user, listNoti[i].id);
+    // }
 
     getlistHistory();
   }

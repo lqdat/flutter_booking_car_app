@@ -69,4 +69,51 @@ class CouponService {
       return null;
     }
   }
+
+  static Future<List<Coupon>> getVoucher(String Code) async {
+    var res = await http.get(
+      Uri.parse(Constants.URl +
+          'odata/DM_Voucher?\$filter=substringof(\'${Code}\',Code)'),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
+
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      List<dynamic> rs =
+          Map<String, dynamic>.from(json.decode(res.body))['value'];
+      List<Coupon> couponList =
+          rs.map<Coupon>((json) => Coupon.fromJson(json)).toList();
+      return couponList;
+    } else {
+      return [];
+    }
+  }
+static Future<Coupon?> PostCoupon(Coupon coupon,String TaiKhoan_Id) async {
+    var res = await http.post(
+      Uri.parse(Constants.URl +
+          'odata/DM_MaKhuyenMai'),
+          body: json.encode({
+            "Name":coupon.name,
+            "Code":coupon.Code,
+            "ExpretionDate":coupon.expirationDate,
+            "TaiKhoan_Id": TaiKhoan_Id,
+            "Prepayment":coupon.prepayment,
+            "Status":0
+          }),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+    );
+
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      var rs =
+          Map<String, dynamic>.from(json.decode(res.body));
+      Coupon coupon =
+          Coupon.fromJson(rs);
+      return coupon;
+    } else {
+      return null;
+    }
+  }
 }

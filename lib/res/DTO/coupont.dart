@@ -12,7 +12,7 @@ class Coupon {
       required this.prepayment,
       required this.name,
       required this.Code,
-      required this.expirationDate});
+      required this.expirationDate}); 
 
   factory Coupon.fromJson(Map<String, dynamic> json) {
     return Coupon(

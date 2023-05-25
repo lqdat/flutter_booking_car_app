@@ -34,7 +34,6 @@ class UserService {
   static Future<bool> UploadImage(String id, File file) async {
     Map<String, String> headers = {
       "Accept": "application/json",
-    
     }; // ignore this headers if there is no authentication
 
     // string to uri
@@ -61,7 +60,6 @@ class UserService {
       // listen for response
       response.stream.transform(utf8.decoder).listen((value) {
         print(value);
-        
       });
       return true;
     }
@@ -82,6 +80,27 @@ class UserService {
       return user;
     } else {
       return null;
+    }
+  }
+
+  static Future<bool> changePassword(String passOld, String passNew) async {
+    String url = Constants.URl +
+        "QuanLyTaiKhoan/DoiMatKhau?matKhauCu=${passOld}&matKhauMoi=${passNew}";
+    String token = "";
+    await storage.read(key: "jwt").then((value) => {
+          if (value != null) {token = value}
+        });
+    var res = await http.post(
+      Uri.parse(url),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        'authorization':'Bearer ${token}'
+      },
+    );
+    if (res.statusCode == 204 || res.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

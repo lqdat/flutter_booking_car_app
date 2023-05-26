@@ -83,24 +83,21 @@ class UserService {
     }
   }
 
-  static Future<bool> changePassword(String passOld, String passNew) async {
+  static Future<ResponeMessage> changePassword(
+      String passOld, String passNew) async {
     String url = Constants.URl +
         "QuanLyTaiKhoan/DoiMatKhau?matKhauCu=${passOld}&matKhauMoi=${passNew}";
-    String token = "";
-    await storage.read(key: "jwt").then((value) => {
-          if (value != null) {token = value}
-        });
+    String token = Constants.token;
     var res = await http.post(
       Uri.parse(url),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
-        'authorization':'Bearer ${token}'
+        'authorization': 'Bearer ${token}'
       },
     );
-    if (res.statusCode == 204 || res.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
+
+    dynamic rs = Map<String, dynamic>.from(json.decode(res.body));
+    ResponeMessage msg = await ResponeMessage.fromJson(rs, res.statusCode);
+    return msg;
   }
 }

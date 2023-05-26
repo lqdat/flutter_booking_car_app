@@ -193,15 +193,15 @@ class _ChangePassState extends State<ChangePass> {
   Future<void> changePass() async {
     await UserService.changePassword(passOld.text, passNew.text)
         .then((value) => {
-              if (value)
+              if (value.StatusCode==200)
                 {
-                  base.showToastSucces(context, "Đổi mật khẩu thành công !"),
+                  base.showToastSucces(context, value.Message),
                   Navigator.pop(context)
                 }
               else
                 {
-                  base.showToastSucces(
-                      context, "Đổi mật khẩu không thành công !")
+                  base.showToastError(
+                      context, value.Message)
                 }
             });
   }

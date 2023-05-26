@@ -11,6 +11,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../base/const.dart'as Constants;
 import '../wiget_notification/wiget_notification.dart';
 
 // ignore: must_be_immutable
@@ -22,6 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+ 
   late LatLng currentPosition;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   late Future<Position> _dataPosition;
@@ -39,6 +41,7 @@ class _HomePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Constants.GetToken();
     getPositonCur();
 
     _dataPosition = _getGeoLocationPosition();

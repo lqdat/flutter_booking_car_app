@@ -36,11 +36,11 @@ class _ProfilePage extends State<ProfilePage> {
     getInfoUser();
   }
 
-  void getInfoUser() {
+  Future<void> getInfoUser() async {
     setState(() {
       isLoading = true;
     });
-    UserService.getInfobyId(widget.user.userId).then((value) => {
+   await UserService.getInfobyId(widget.user.userId).then((value) => {
           _usernameController =
               new TextEditingController(text: widget.user.userName),
           _nameController = new TextEditingController(text: value?.name),
@@ -74,7 +74,7 @@ class _ProfilePage extends State<ProfilePage> {
           : Container(
               color: Colors.transparent,
               child: LayoutBuilder(builder: (context, constraints) {
-                return SingleChildScrollView(
+                return RefreshIndicator(onRefresh: () =>getInfoUser() ,child: SingleChildScrollView(
                   child: ConstrainedBox(
                     constraints:
                         BoxConstraints(minHeight: constraints.maxHeight),
@@ -428,7 +428,7 @@ class _ProfilePage extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                );
+                ));
               }),
             ),
     );
@@ -471,7 +471,7 @@ class _ProfilePage extends State<ProfilePage> {
     final img = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       image = File(img!.path);
-      ;
+      isLoading=true;
     });
     UserService.UploadImage(widget.user.userId, image!).then((value) => {
           if (value == true

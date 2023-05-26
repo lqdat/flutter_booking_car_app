@@ -22,7 +22,7 @@ class _WidgetCouponState extends State<WidgetCoupon> {
   bool isLoading = false;
   List<Coupon> listCoupon = [];
 
-  void getlistCoupon() async {
+  Future<void> getlistCoupon() async {
     setState(() {
       isLoading = true;
     });
@@ -76,7 +76,7 @@ class _WidgetCouponState extends State<WidgetCoupon> {
                         ? StreamBuilder(
                             stream: _couponStream.stream,
                             builder: (context, snapshot) {
-                              return new ListView.builder(
+                              return RefreshIndicator(onRefresh: () => getlistCoupon(),child: new ListView.builder(
                                 itemBuilder: (context, index) {
                                   return HorizontalCoupon(
                                       listCoupon[index],
@@ -85,6 +85,7 @@ class _WidgetCouponState extends State<WidgetCoupon> {
                                 },
                                 itemCount: listCoupon.length,
                                 scrollDirection: Axis.vertical,
+                              )
                               );
                             },
                           )

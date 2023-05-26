@@ -1,5 +1,7 @@
 // ignore_for_file: unnecessary_new, import_of_legacy_library_into_null_safe
 
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/history.dart';
@@ -33,7 +35,7 @@ class _HistoryPageState extends State<HistoryPage> {
   List<History> listHistory = [];
   List<Car> listCar = [];
 
-  void getlistHistory() async {
+  Future<void> getlistHistory() async {
     setState(() {
       isLoading = true;
     });
@@ -93,14 +95,17 @@ class _HistoryPageState extends State<HistoryPage> {
           children: [
             Container(
               padding: const EdgeInsets.fromLTRB(16, 50, 16, 0),
+              
               child: isLoading
                   ? SkeletonWiget()
-                  : Container(
+                  : new BackdropFilter(
+                filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),child: Container(
                       child: listHistory.length > 0
                           ? StreamBuilder(
                               stream: _historyStream.stream,
                               builder: (context, snapshot) {
-                                return new ListView.builder(
+                                return RefreshIndicator(onRefresh: () =>getlistHistory() ,
+                                child: new ListView.builder(
                                   itemBuilder: (context, index) {
                                     return Slidable(
                                         startActionPane: ActionPane(
@@ -119,7 +124,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                                   Color(0xFFFE4A49),
                                               foregroundColor: Colors.white,
                                               icon: Icons.delete,
-                                              label: 'Delete',
+                                              label: 'Xóa',
                                             ),
                                             SlidableAction(
                                               onPressed: (_) {
@@ -426,11 +431,12 @@ class _HistoryPageState extends State<HistoryPage> {
                                   },
                                   itemCount: listHistory.length,
                                   scrollDirection: Axis.vertical,
+                                )
                                 );
                               },
                             )
                           : Empty('Chưa có lịch sử đặt xe'),
-                    ),
+                    )),
             ),
             Positioned(
               top: 0,

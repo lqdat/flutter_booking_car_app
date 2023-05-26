@@ -27,6 +27,7 @@ class _SearchInputState extends State<SearchInput> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Flexible(
+              fit: FlexFit.loose,
               child: TextField(
                 onChanged: (value) => {
                   setState(() {
@@ -49,6 +50,7 @@ class _SearchInputState extends State<SearchInput> {
             SizedBox(
               height: 60,
               child: ElevatedButton.icon(
+                
                 icon: Icon(
                   Icons.check_circle,
                   color: Color(0xff368f8b),

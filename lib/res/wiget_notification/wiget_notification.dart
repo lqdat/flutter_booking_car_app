@@ -4,18 +4,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/res/DTO/user.dart';
 import 'package:flutter_application/res/component/emty_wiget.dart';
-import 'package:flutter_application/res/service/historyservice.dart';
-import 'package:flutter_application/res/wiget_home/home_page.dart';
-import 'package:flutter_dash/flutter_dash.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import '../DTO/notification.dart';
-import '../base/const.dart' as Constrants;
 import '../component/skeleton_wiget.dart';
 import '../service/notificationservice.dart';
 import '../stream/notification_bloc.dart';
-import '../wiget_home/wigets/info_trip_wiget.dart';
 
 class NotificationPage extends StatefulWidget {
   User user;
@@ -29,7 +23,7 @@ class _NotificationPageState extends State<NotificationPage> {
   bool isLoading = false;
   List<Notify> listNoti = [];
 
-  void getlistHistory() async {
+  Future<void> getlistHistory() async {
     setState(() {
       isLoading = true;
     });
@@ -93,7 +87,7 @@ class _NotificationPageState extends State<NotificationPage> {
                           ? StreamBuilder(
                               stream: _notification.stream,
                               builder: (context, snapshot) {
-                                return new ListView.separated(
+                                return RefreshIndicator(onRefresh:() => getlistHistory(),child: new ListView.separated(
                                   itemBuilder: (context, index) {
                                     return Slidable(
                                         key: Key(index.toString()),
@@ -121,7 +115,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                   Color(0xFFFE4A49),
                                               foregroundColor: Colors.white,
                                               icon: Icons.delete,
-                                              label: 'Delete',
+                                              label: 'Xóa',
                                             ),
                                           ],
                                         ),
@@ -137,14 +131,12 @@ class _NotificationPageState extends State<NotificationPage> {
                                             child: ElevatedButton(
                                               onPressed: () {},
                                               child: ListTile(
-                                                title: Text(
-                                                    DateFormat(
-                                                            'yyyy-MM-dd – kk:mm')
-                                                        .format(DateTime.parse(
-                                                            listNoti
-                                                                .elementAt(
-                                                                    index)
-                                                                .date))),
+                                                title: Text(DateFormat(
+                                                        'yyyy-MM-dd – kk:mm')
+                                                    .format(DateTime.parse(
+                                                        listNoti
+                                                            .elementAt(index)
+                                                            .date))),
                                                 subtitle: Text(listNoti
                                                     .elementAt(index)
                                                     .content),
@@ -183,7 +175,9 @@ class _NotificationPageState extends State<NotificationPage> {
                                   },
                                   itemCount: listNoti.length,
                                   scrollDirection: Axis.vertical,
+                                )
                                 );
+                                
                               },
                             )
                           : Empty('Chưa có thông báo'),
@@ -240,11 +234,9 @@ class _NotificationPageState extends State<NotificationPage> {
     setState(() {
       isLoading = true;
     });
-    // for (int i = 0; i < listNoti.length; i++) {
-    //   await HistoryService.deleteHistory(widget.user, listNoti[i].id);
-    // }
-
-    getlistHistory();
+    await NotificationService.deleteAllNotify(listNoti).then((value) {
+      getlistHistory();
+    });
   }
 
   Future<void> deletebyId(String Id) async {

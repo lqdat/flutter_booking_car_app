@@ -144,7 +144,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                                   Color(0xFF21B7CA),
                                               foregroundColor: Colors.white,
                                               icon: Icons.edit,
-                                              label: 'Chỉnh sửa',
+                                              label: listHistory.elementAt(index).status==0?'Đánh giá' :'Chỉnh sửa',
                                             ),
                                           ],
                                         ),

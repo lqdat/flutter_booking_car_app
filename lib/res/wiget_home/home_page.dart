@@ -64,6 +64,7 @@ class _HomePage extends State<HomePage> {
                         GoogleMap(
                             polylines: setPolyline,
                             zoomControlsEnabled: false,
+                            myLocationEnabled: true,
                             markers: setMarket,
                             mapType: MapType.normal,
                             onMapCreated: (GoogleMapController controller) {
